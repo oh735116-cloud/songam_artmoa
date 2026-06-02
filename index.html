@@ -3,28 +3,51 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>공연모아 - 메인</title>
+    <title>GongMoA - 공연 정보 웹앱</title>
     <link
       rel="stylesheet"
       as="style"
       crossorigin
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
     />
-
     <style>
+      :root {
+        /* 디자인 토큰: 게임/엔터테인먼트 사이트 무드 */
+        --bg: #07080d;
+        --surface: #11141c;
+        --surface-2: #1a1f2b;
+        --text: #f8f9fc;
+        --muted: #9ca3b5;
+        --primary: #ff4b1f;
+        --primary-2: #ff8a00;
+        --border: rgba(255, 255, 255, 0.14);
+        --radius: 10px;
+        --shadow: 0 28px 80px rgba(0, 0, 0, 0.46);
+      }
+
       * {
-        margin: 0;
-        padding: 0;
         box-sizing: border-box;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
-        --accent: #2f6f73;
-        --accent-strong: #1f5559;
-        --accent-soft: #e5f4f2;
-        --stage-gold: #d7b46a;
-        --ink: #20232a;
-        --focus-ring: rgba(215, 180, 106, 0.46);
+        margin: 0;
+        background:
+          radial-gradient(
+            circle at 18% 8%,
+            rgba(255, 75, 31, 0.18),
+            transparent 34rem
+          ),
+          radial-gradient(
+            circle at 88% 16%,
+            rgba(255, 138, 0, 0.13),
+            transparent 30rem
+          ),
+          linear-gradient(180deg, #08090f 0%, var(--bg) 48%, #05060a 100%);
+        color: var(--text);
         font-family:
           "Pretendard",
           -apple-system,
@@ -33,1065 +56,1834 @@
           "Noto Sans KR",
           "Malgun Gothic",
           sans-serif;
-        background: #f5f6fa;
-        color: #222;
         font-synthesis: none;
-        text-rendering: optimizeLegibility;
         -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-
-      button,
-      input {
-        font: inherit;
-      }
-
-      button {
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      button:focus {
-        outline: none;
+        text-rendering: optimizeLegibility;
       }
 
       a {
-        text-decoration: none;
         color: inherit;
+        text-decoration: none;
       }
 
-      .app {
-        max-width: 430px;
+      button {
+        font: inherit;
+      }
+
+      a:focus-visible,
+      button:focus-visible,
+      select:focus-visible {
+        outline: 3px solid rgba(255, 75, 31, 0.5);
+        outline-offset: 3px;
+      }
+
+      .shell {
+        width: min(calc(100% - 40px), 1280px);
         margin: 0 auto;
-        min-height: 100vh;
-        background: #fff;
-        padding-bottom: 80px;
       }
 
-      /* 상단 헤더 */
-      header {
+      /* Header */
+      .site-header {
         position: sticky;
         top: 0;
-        z-index: 10;
-        background: #fff;
-        padding: 18px 20px 14px;
-        border-bottom: 1px solid #eee;
+        z-index: 20;
+        border-bottom: 1px solid var(--border);
+        background: rgba(7, 8, 13, 0.82);
+        backdrop-filter: blur(18px);
       }
 
-      .header-top {
+      .header-inner {
         display: flex;
-        justify-content: space-between;
+        min-height: 76px;
         align-items: center;
-        margin-bottom: 14px;
+        justify-content: space-between;
+        gap: 24px;
       }
 
       .logo {
-        font-size: 22px;
-        font-weight: bold;
-        color: #222;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 24px;
+        font-weight: 950;
       }
 
-      .upload-btn {
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        border: none;
-        background: linear-gradient(135deg, var(--accent-strong) 0%, #24333f 100%);
-        color: #fff;
-        padding: 9px 15px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 800;
-        cursor: pointer;
-        box-shadow:
-          0 6px 0 #173d40,
-          0 12px 22px rgba(31, 85, 89, 0.22);
+      /* .logo-mark {
+        display: grid;
+        width: 40px;
+        height: 40px;
+        place-items: center;
+        border-radius: var(--radius);
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        color: #120703;
+        font-size: 15px;
+        font-weight: 950;
+      } */
+
+      .main-nav {
+        display: none;
+        align-items: center;
+        gap: 28px;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 850;
+      }
+
+      .main-nav a {
+        transition: color 0.2s ease;
+      }
+
+      .main-nav a:hover {
+        color: var(--text);
+      }
+
+      .btn {
+        display: inline-flex;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid transparent;
+        border-radius: var(--radius);
+        padding: 0 18px;
+        background: transparent;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 900;
         transition:
           transform 0.2s ease,
           box-shadow 0.2s ease,
-          filter 0.2s ease;
+          border-color 0.2s ease,
+          background 0.2s ease;
       }
 
-      .upload-btn::before {
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        color: #140805;
+        box-shadow: 0 16px 38px rgba(255, 75, 31, 0.26);
+      }
+
+      .btn-ghost {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        border-color: rgba(137, 180, 255, 0.42);
+        background:
+          linear-gradient(
+            135deg,
+            rgba(118, 93, 255, 0.24),
+            rgba(40, 196, 255, 0.14)
+          ),
+          rgba(255, 255, 255, 0.04);
+        color: #eef5ff;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+          0 14px 34px rgba(82, 121, 255, 0.18);
+      }
+
+      .btn-ghost::before {
         position: absolute;
-        inset: 0;
+        inset: -1px;
         z-index: -1;
+        border-radius: inherit;
+        background: linear-gradient(120deg, #7ba7ff, #b982ff, #5ee7ff, #7ba7ff);
+        content: "";
+        opacity: 0.34;
+      }
+
+      .btn-ghost::after {
+        position: absolute;
+        top: -45%;
+        bottom: -45%;
+        left: -70%;
+        width: 42%;
         background: linear-gradient(
-          120deg,
-          transparent 0%,
-          rgba(255, 255, 255, 0.38) 45%,
-          transparent 70%
+          100deg,
+          transparent,
+          rgba(255, 255, 255, 0.82),
+          rgba(112, 226, 255, 0.62),
+          transparent
         );
         content: "";
-        transform: translateX(-130%);
-        transition: transform 0.45s ease;
-      }
-
-      .upload-btn:focus {
-        box-shadow:
-          0 6px 0 #173d40,
-          0 0 0 4px var(--focus-ring),
-          0 16px 28px rgba(31, 85, 89, 0.28);
-        filter: saturate(1.08);
-      }
-
-      .upload-btn:focus::before {
-        transform: translateX(130%);
-      }
-
-      .upload-btn:active {
-        box-shadow:
-          0 2px 0 #173d40,
-          0 7px 14px rgba(31, 85, 89, 0.18);
-        transform: translateY(4px);
-      }
-
-      /* 검색창 */
-      .search-box {
-        display: flex;
-        align-items: center;
-        background: #f1f2f6;
-        border-radius: 14px;
-        padding: 10px 14px;
-      }
-
-      .search-box input {
-        width: 100%;
-        border: none;
-        outline: none;
-        background: transparent;
-        font-size: 14px;
-      }
-
-      /* 필터 */
-      .filter-section {
-        padding: 16px 20px 8px;
-        display: flex;
-        gap: 8px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x proximity;
-        touch-action: pan-x;
-        cursor: grab;
-        user-select: none;
-        scrollbar-width: none;
-      }
-
-      .filter-section::-webkit-scrollbar {
-        display: none;
-      }
-
-      .filter-section.is-dragging {
-        cursor: grabbing;
-        scroll-snap-type: none;
-      }
-
-      .filter-btn {
-        position: relative;
-        isolation: isolate;
-        flex: 0 0 auto;
-        overflow: hidden;
-        border: 1px solid #dfe7e6;
-        background: #fff;
-        padding: 9px 15px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 700;
-        color: #3f4748;
-        cursor: pointer;
-        scroll-snap-align: start;
-        box-shadow:
-          inset 0 1px 0 rgba(255, 255, 255, 0.9),
-          0 4px 12px rgba(34, 34, 34, 0.04);
-        transition:
-          transform 0.18s ease,
-          border-color 0.18s ease,
-          color 0.18s ease,
-          box-shadow 0.18s ease;
-      }
-
-      .filter-btn::before {
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        background: linear-gradient(135deg, var(--accent-strong), var(--accent));
-        content: "";
         opacity: 0;
-        transform: scaleX(0);
-        transform-origin: left;
-        transition:
-          opacity 0.2s ease,
-          transform 0.22s ease;
+        transform: rotate(18deg);
       }
 
-      .filter-btn:focus {
-        border-color: var(--accent);
-        color: #fff;
+      .btn-ghost:hover {
+        border-color: rgba(151, 199, 255, 0.78);
         box-shadow:
-          0 0 0 4px var(--focus-ring),
-          0 8px 18px rgba(31, 85, 89, 0.16);
+          0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+          0 0 28px rgba(127, 167, 255, 0.34),
+          0 18px 42px rgba(152, 101, 255, 0.24);
       }
 
-      .filter-btn:focus::before {
+      .btn-ghost:hover::after {
+        animation: aiShine 0.72s ease forwards;
         opacity: 1;
-        transform: scaleX(1);
       }
 
-      .filter-btn.active {
-        background: linear-gradient(135deg, var(--accent-strong), var(--accent));
-        color: #fff;
-        border-color: var(--accent);
-        box-shadow:
-          0 4px 0 #173d40,
-          0 10px 18px rgba(31, 85, 89, 0.18);
-      }
-
-      .filter-btn:active {
-        transform: translateY(2px);
-      }
-
-      /* 섹션 공통 */
-      section {
-        padding: 14px 20px;
-      }
-
-      .section-title {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 12px;
-      }
-
-      /* 추천 공연 카드 */
-      .recommend-list {
-        display: flex;
-        gap: 12px;
-        overflow-x: auto;
-        padding-bottom: 4px;
-        scroll-snap-type: x mandatory;
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-x: contain;
-        scrollbar-width: none;
-      }
-
-      .recommend-list::-webkit-scrollbar {
-        display: none;
-      }
-
-      .recommend-card {
-        position: relative;
-        flex: 0 0 100%;
-        overflow: hidden;
-        background: #222;
-        color: #fff;
-        border-radius: 20px;
-        padding: 20px;
-        min-height: 190px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        scroll-snap-align: center;
-        scroll-snap-stop: always;
-        transition:
-          transform 0.22s ease,
-          box-shadow 0.22s ease;
-      }
-
-      .recommend-card::before {
-        position: absolute;
-        inset: 0;
-        background-image:
-          linear-gradient(180deg, rgba(8, 12, 16, 0.08), rgba(8, 12, 16, 0.78)),
-          var(--recommend-image, linear-gradient(135deg, #24333f, #2f6f73));
-        background-position: center;
-        background-size: cover;
-        content: "";
-        transition: transform 0.35s ease;
-      }
-
-      .recommend-card > * {
-        position: relative;
-        z-index: 1;
-      }
-
-      .recommend-card:focus-within {
-        box-shadow:
-          0 0 0 4px var(--focus-ring),
-          0 18px 34px rgba(16, 24, 32, 0.22);
-      }
-
-      .recommend-card:focus-within::before {
-        transform: scale(1.03);
-      }
-
-      .recommend-card .tag {
-        display: inline-block;
-        width: fit-content;
-        background: rgba(10, 16, 20, 0.46);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 6px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        margin-bottom: 10px;
-      }
-
-      .recommend-card h2 {
-        font-size: 18px;
-        line-height: 1.35;
-        margin-bottom: 8px;
-      }
-
-      .recommend-card p {
-        font-size: 13px;
-        line-height: 1.5;
-        opacity: 0.9;
-      }
-      .recommend-card button {
-        position: relative;
-        isolation: isolate;
-        width: fit-content;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.7);
-        background: rgba(255, 255, 255, 0.92);
-        color: var(--accent-strong);
-        padding: 10px 16px;
-        border-radius: 999px;
-        font-weight: 800;
-        cursor: pointer;
-        margin-top: 16px;
-        box-shadow:
-          0 4px 0 rgba(215, 180, 106, 0.72),
-          0 12px 24px rgba(0, 0, 0, 0.18);
-        transition:
-          transform 0.18s ease,
-          box-shadow 0.18s ease,
-          color 0.18s ease;
-      }
-
-      .recommend-card button::before {
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        background: linear-gradient(135deg, var(--accent-strong), var(--stage-gold));
-        content: "";
-        transform: translateY(100%);
-        transition: transform 0.2s ease;
-      }
-
-      .recommend-card button:focus {
-        color: #fff;
-        box-shadow:
-          0 4px 0 rgba(215, 180, 106, 0.72),
-          0 0 0 4px var(--focus-ring),
-          0 16px 26px rgba(0, 0, 0, 0.22);
-      }
-
-      .recommend-card button:focus::before {
-        transform: translateY(0);
-      }
-
-      .recommend-card button:active {
-        box-shadow:
-          0 2px 0 rgba(255, 255, 255, 0.36),
-          0 8px 16px rgba(0, 0, 0, 0.18);
-        transform: translateY(3px);
-      }
-
-      /* 공연 피드 */
-      .feed-list {
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-      }
-
-      .feed-card {
-        border: 1px solid #eee;
-        border-radius: 18px;
-        overflow: hidden;
-        background: #fff;
-        transition:
-          transform 0.22s ease,
-          border-color 0.22s ease,
-          box-shadow 0.22s ease;
-      }
-
-      .feed-card:focus-within {
-        border-color: var(--stage-gold);
-        box-shadow:
-          0 0 0 4px var(--focus-ring),
-          0 16px 30px rgba(34, 34, 34, 0.1);
-      }
-
-      .feed-card.is-new {
-        animation: cardFadeIn 0.28s ease both;
-      }
-
-      @keyframes cardFadeIn {
+      @keyframes aiShine {
         from {
-          opacity: 0;
-          transform: translateY(14px);
+          left: -70%;
         }
 
         to {
-          opacity: 1;
-          transform: translateY(0);
+          left: 130%;
         }
       }
 
-      .feed-img {
-        height: 220px;
-        background: #ddd;
+      /* Hero */
+      .hero {
+        position: relative;
+        overflow: hidden;
+        min-height: 640px;
+        border-bottom: 1px solid var(--border);
+        background:
+          linear-gradient(
+            90deg,
+            rgba(7, 8, 13, 0.94) 0%,
+            rgba(7, 8, 13, 0.64) 54%,
+            rgba(7, 8, 13, 0.26) 100%
+          ),
+          var(--hero-image, linear-gradient(135deg, #161b28 0%, #090b12 62%)),
+          radial-gradient(
+            circle at 72% 42%,
+            rgba(255, 75, 31, 0.35),
+            transparent 22rem
+          ),
+          var(--hero-tone, linear-gradient(135deg, #161b28 0%, #090b12 62%));
         background-position: center;
         background-size: cover;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #777;
-        font-size: 15px;
+        background-repeat: no-repeat;
+        transition: background-image 0.45s ease;
       }
 
-      .feed-img.has-poster {
-        background-color: #111;
-        color: transparent;
+      .hero::after {
+        position: absolute;
+        inset: auto 0 0;
+        height: 40%;
+        background: linear-gradient(180deg, transparent, var(--bg));
+        content: "";
+        pointer-events: none;
       }
 
-      .feed-content {
-        padding: 14px;
+      .hero-inner {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        height: 640px;
+        align-content: center;
+        gap: 24px;
+        padding: 96px 0;
       }
 
-      .feed-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-
-      .feed-title {
-        font-size: 16px;
-        font-weight: bold;
-      }
-
-      .price-free {
-        background: #00b894;
-        color: #fff;
-        padding: 5px 9px;
-        border-radius: 14px;
-        font-size: 12px;
-      }
-
-      .price-paid {
-        background: #0984e3;
-        color: #fff;
-        padding: 5px 9px;
-        border-radius: 14px;
-        font-size: 12px;
-      }
-
-      .feed-info {
+      .eyebrow,
+      .section-label {
+        color: var(--primary-2);
         font-size: 13px;
-        color: #666;
-        line-height: 1.6;
-        margin-bottom: 12px;
+        font-weight: 950;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .hero-title {
+        display: -webkit-box;
+        overflow: hidden;
+        max-width: 900px;
+        min-height: calc(clamp(44px, 8vw, 96px) * 2);
+        margin: 0;
+        font-size: clamp(44px, 8vw, 96px);
+        line-height: 1;
+        letter-spacing: 0;
+        word-break: keep-all;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        transition:
+          opacity 0.28s ease,
+          transform 0.28s ease;
+      }
+
+      .hero-copy {
+        display: -webkit-box;
+        overflow: hidden;
+        max-width: 680px;
+        min-height: calc(clamp(16px, 2vw, 21px) * 1.7 * 2);
+        margin: 0;
+        color: var(--muted);
+        font-size: clamp(16px, 2vw, 21px);
+        font-weight: 700;
+        line-height: 1.7;
+        word-break: keep-all;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        transition:
+          opacity 0.28s ease,
+          transform 0.28s ease;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        transition:
+          opacity 0.28s ease,
+          transform 0.28s ease;
+      }
+
+      .hero-meta span {
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        padding: 8px 11px;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .hero.is-changing .hero-title,
+      .hero.is-changing .hero-copy,
+      .hero.is-changing .hero-meta {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      /* Section common */
+      .section {
+        padding: 88px 0;
+      }
+
+      .section-head {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 30px;
+      }
+
+      .section-title {
+        margin: 0;
+        font-size: clamp(30px, 5vw, 56px);
+        line-height: 1.06;
+        word-break: keep-all;
+      }
+
+      .section-copy {
+        max-width: 720px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.7;
+      }
+
+      /* 공연 카드 */
+      .card-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .performance-card,
+      .news-card {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+        transition:
+          transform 0.24s ease,
+          border-color 0.24s ease,
+          box-shadow 0.24s ease,
+          background 0.24s ease;
+      }
+
+      .performance-card:hover,
+      .news-card:hover {
+        border-color: rgba(255, 75, 31, 0.55);
+        background: var(--surface-2);
+        box-shadow: var(--shadow);
+        transform: translateY(-8px);
+      }
+
+      .poster {
+        position: relative;
+        display: grid;
+        min-height: 260px;
+        align-items: end;
+        padding: 22px;
+        background:
+          linear-gradient(180deg, rgba(7, 8, 13, 0.04), rgba(7, 8, 13, 0.86)),
+          var(--poster-image, var(--poster-tone));
+        background-position: center;
+        background-size: cover;
+      }
+
+      .poster::before {
+        position: absolute;
+        inset: 14px 14px auto auto;
+        width: 42px;
+        height: 42px;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 50%;
+        background: rgba(7, 8, 13, 0.62);
+        content: "";
+      }
+
+      .poster-label {
+        position: relative;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 34px;
+        font-weight: 950;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .card-body {
+        display: grid;
+        gap: 13px;
+        padding: 22px;
+      }
+
+      .card-topline,
+      .card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .card-date {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .card-title {
+        margin: 0;
+        font-size: 22px;
+        line-height: 1.28;
+        word-break: keep-all;
+      }
+
+      .card-caption {
+        margin: 0;
+        color: #c9d1e3;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.55;
+        word-break: keep-all;
+      }
+
+      .card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .card-meta span {
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 999px;
+        padding: 6px 9px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .badge {
+        display: inline-flex;
+        width: fit-content;
+        max-width: 100%;
+        border-radius: 999px;
+        padding: 6px 10px;
+        overflow: hidden;
+        font-size: 12px;
+        font-weight: 950;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .badge.free {
+        background: rgba(255, 138, 0, 0.14);
+        color: var(--primary-2);
+      }
+
+      .badge.paid {
+        background: rgba(255, 75, 31, 0.16);
+        color: #ff9a80;
       }
 
       .feed-actions {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        gap: 8px;
       }
 
-      .like-btn,
-      .detail-btn {
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        border: 1px solid transparent;
-        background: #f6f7fb;
-        padding: 9px 13px;
-        border-radius: 999px;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 800;
-        box-shadow:
-          inset 0 1px 0 rgba(255, 255, 255, 0.9),
-          0 4px 10px rgba(34, 34, 34, 0.06);
-        transition:
-          transform 0.18s ease,
-          background 0.18s ease,
-          color 0.18s ease,
-          box-shadow 0.18s ease;
-      }
-
-      .like-btn::before,
-      .detail-btn::before {
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        content: "";
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.22s ease;
-      }
-
-      .like-btn::before {
-        background: linear-gradient(135deg, #9b4058, var(--stage-gold));
-      }
-
-      .detail-btn::before {
-        background: linear-gradient(135deg, #20232a, var(--accent));
-      }
-
-      .like-btn:focus {
-        border-color: #d9a7b4;
-        color: #fff;
-        box-shadow:
-          0 0 0 4px rgba(215, 180, 106, 0.32),
-          0 10px 18px rgba(155, 64, 88, 0.16);
-      }
-
-      .like-btn:focus::before,
-      .detail-btn:focus::before {
-        transform: scaleX(1);
-      }
-
-      .detail-btn {
-        background: #20232a;
-        color: #fff;
-        box-shadow:
-          0 5px 0 #111318,
-          0 12px 18px rgba(34, 34, 34, 0.16);
-      }
-
-      .detail-btn:focus {
-        border-color: var(--accent);
-        box-shadow:
-          0 0 0 4px var(--focus-ring),
-          0 8px 18px rgba(31, 85, 89, 0.22);
-      }
-
-      .like-btn:active,
-      .detail-btn:active {
-        transform: translateY(2px);
-      }
-
-      .feed-loader {
-        display: flex;
+      .feed-action {
+        display: inline-flex;
+        min-width: 42px;
+        min-height: 38px;
         align-items: center;
         justify-content: center;
-        min-height: 56px;
-        padding: 14px 0;
-        color: #777;
-        font-size: 13px;
-      }
-
-      .feed-loader::before {
-        width: 18px;
-        height: 18px;
-        margin-right: 8px;
-        border: 2px solid #e5e2ff;
-        border-top-color: #6c5ce7;
-        border-radius: 50%;
-        content: "";
-        animation: loaderSpin 0.8s linear infinite;
-      }
-
-      .feed-loader.is-complete::before {
-        display: none;
-      }
-
-      @keyframes loaderSpin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      /* 하단 네비게이션 */
-      nav {
-        position: fixed;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        max-width: 430px;
-        background: #fff;
-        border-top: 1px solid #eee;
-        display: flex;
-        justify-content: space-around;
-        padding: 10px 0;
-        z-index: 20;
-      }
-
-      nav a {
-        position: relative;
-        min-width: 52px;
-        padding: 4px 6px 8px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
         font-size: 12px;
-        color: #777;
-        text-align: center;
+        font-weight: 950;
+        cursor: pointer;
         transition:
-          color 0.2s ease,
+          border-color 0.2s ease,
+          background 0.2s ease,
           transform 0.2s ease;
       }
 
-      nav a:focus {
-        outline: none;
+      .feed-action:hover {
+        border-color: rgba(255, 75, 31, 0.5);
+        background: rgba(255, 75, 31, 0.12);
+        transform: translateY(-2px);
       }
 
-      nav a::after {
-        position: absolute;
-        right: 12px;
-        bottom: 0;
-        left: 12px;
-        height: 3px;
+      .card-link {
+        color: var(--primary-2);
+        font-size: 13px;
+        font-weight: 950;
+      }
+
+      /* 추천 필터 */
+      .filter-panel {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background:
+          linear-gradient(
+            135deg,
+            rgba(255, 75, 31, 0.1),
+            rgba(255, 138, 0, 0.04)
+          ),
+          var(--surface);
+        padding: 20px;
+      }
+
+      .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .filter-field {
+        display: grid;
+        gap: 8px;
+        min-width: min(100%, 220px);
+      }
+
+      /* .filter-label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 900;
+      } */
+
+      .filter-select {
+        min-height: 44px;
+        border: 1px solid var(--border);
         border-radius: 999px;
-        background: linear-gradient(90deg, var(--stage-gold), var(--accent));
-        content: "";
-        transform: scaleX(0);
-        transform-origin: center;
-        transition: transform 0.22s ease;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text);
+        padding: 0 42px 0 16px;
+        font-size: 13px;
+        font-weight: 900;
+        cursor: pointer;
       }
 
-      nav a:focus {
-        color: var(--ink);
+      .filter-select option {
+        background: var(--surface);
+        color: var(--text);
       }
 
-      nav a:focus::after,
-      nav a.active::after {
-        transform: scaleX(1);
+      .filter-chip {
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--muted);
+        padding: 11px 16px;
+        font-size: 13px;
+        font-weight: 900;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          background 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease;
       }
 
-      nav a.active {
-        color: var(--accent-strong);
-        font-weight: bold;
+      .filter-chip:hover {
+        border-color: rgba(255, 75, 31, 0.45);
+        color: var(--text);
+        transform: translateY(-2px);
       }
 
-      .nav-icon {
-        display: block;
-        font-size: 20px;
-        margin-bottom: 3px;
-        transition: transform 0.2s ease;
+      .filter-chip.active {
+        border-color: transparent;
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        color: #140805;
       }
 
-      nav a:focus .nav-icon,
-      nav a.active .nav-icon {
-        transform: translateY(-1px) scale(1.08);
+      .ai-reason {
+        margin: 0;
+        border-left: 3px solid #8db2ff;
+        padding-left: 10px;
+        color: #dbe6ff;
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.55;
+        word-break: keep-all;
+      }
+
+      .ai-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(3, 4, 8, 0.72);
+        backdrop-filter: blur(14px);
+      }
+
+      .ai-modal.is-open {
+        display: flex;
+      }
+
+      .ai-dialog {
+        width: min(100%, 720px);
+        max-height: min(88vh, 760px);
+        overflow: auto;
+        border: 1px solid rgba(141, 178, 255, 0.32);
+        border-radius: var(--radius);
+        background:
+          linear-gradient(
+            135deg,
+            rgba(118, 93, 255, 0.16),
+            rgba(40, 196, 255, 0.08)
+          ),
+          var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .ai-dialog-head,
+      .ai-dialog-body {
+        padding: 24px;
+      }
+
+      .ai-dialog-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .ai-dialog-title {
+        margin: 0;
+        font-size: 28px;
+        line-height: 1.2;
+      }
+
+      .ai-dialog-copy {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 750;
+        line-height: 1.6;
+      }
+
+      .icon-button {
+        display: inline-flex;
+        width: 42px;
+        height: 42px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .ai-form {
+        display: grid;
+        gap: 18px;
+      }
+
+      .ai-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .ai-field {
+        display: grid;
+        gap: 8px;
+      }
+
+      .ai-field label {
+        color: var(--text);
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .ai-field select,
+      .ai-field textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
+        padding: 12px 14px;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .ai-field select option {
+        background: var(--surface);
+        color: var(--text);
+      }
+
+      .ai-field textarea {
+        min-height: 110px;
+        resize: vertical;
+        line-height: 1.6;
+      }
+
+      .ai-status {
+        min-height: 22px;
+        margin: 0;
+        color: #bfd4ff;
+        font-size: 13px;
+        font-weight: 850;
+      }
+
+      .ai-dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      /* Newsroom */
+      .news-card {
+        display: grid;
+        min-height: 250px;
+        align-content: space-between;
+        padding: 24px;
+      }
+
+      .news-type {
+        color: var(--primary-2);
+        font-size: 12px;
+        font-weight: 950;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .news-card h3 {
+        margin: 0;
+        font-size: 24px;
+        line-height: 1.25;
+        word-break: keep-all;
+      }
+
+      .news-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.65;
+      }
+
+      /* Footer */
+      .site-footer {
+        border-top: 1px solid var(--border);
+        padding: 38px 0 46px;
+        color: var(--muted);
+      }
+
+      .footer-inner {
+        display: grid;
+        gap: 20px;
+      }
+
+      .footer-brand {
+        color: var(--text);
+        font-size: 22px;
+        font-weight: 950;
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 14px;
+        font-weight: 850;
+      }
+
+      @media (min-width: 720px) {
+        .main-nav {
+          display: flex;
+        }
+
+        .card-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .footer-inner {
+          grid-template-columns: 1fr auto;
+          align-items: end;
+        }
+      }
+
+      @media (min-width: 1080px) {
+        .card-grid.featured-grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .card-grid.news-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 560px) {
+        .shell {
+          width: min(calc(100% - 32px), 1280px);
+        }
+
+        .header-inner {
+          min-height: 68px;
+        }
+
+        .logo {
+          font-size: 21px;
+        }
+
+        .header-inner .btn {
+          display: none;
+        }
+
+        .hero-inner {
+          width: min(calc(100vw - 32px), 1280px);
+          height: 600px;
+          padding: 72px 0 76px;
+        }
+
+        .hero-title {
+          width: 100%;
+          max-width: 100%;
+          min-height: calc(clamp(30px, 8vw, 34px) * 1.16 * 2);
+          font-size: clamp(30px, 8vw, 34px);
+          line-height: 1.16;
+          word-break: keep-all;
+          overflow-wrap: break-word;
+        }
+
+        .hero-copy {
+          max-width: 320px;
+          min-height: calc(16px * 1.65 * 2);
+          font-size: 16px;
+          line-height: 1.65;
+        }
+
+        .hero-actions .btn {
+          width: 100%;
+        }
+
+        .section-copy,
+        .card-title,
+        .card-caption,
+        .news-card h3 {
+          word-break: keep-all;
+          overflow-wrap: break-word;
+        }
+
+        .hero-meta span {
+          font-size: 12px;
+        }
+
+        .poster {
+          min-height: 230px;
+        }
+
+        .card-body {
+          padding: 20px;
+        }
+
+        .card-footer {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .filter-field,
+        .filter-chip {
+          width: 100%;
+        }
+
+        .ai-modal {
+          padding: 12px;
+        }
+
+        .ai-dialog-head,
+        .ai-dialog-body {
+          padding: 18px;
+        }
+
+        .ai-form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section {
+          padding: 64px 0;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="app">
-      <!-- 상단 영역 -->
-      <header>
-        <div class="header-top">
-          <h1 class="logo">공연모아</h1>
-          <button class="upload-btn">로그인</button>
-        </div>
-
-        <div class="search-box">
-          <input type="text" placeholder="공연명, 지역, 장르를 검색하세요" />
-        </div>
-      </header>
-
-      <!-- 필터 영역 -->
-      <div class="filter-section">
-        <button class="filter-btn active">공연명</button>
-        <button class="filter-btn">장소</button>
-        <button class="filter-btn">지역</button>
-        <button class="filter-btn">장르</button>
-        <button class="filter-btn">연령층</button>
-        <button class="filter-btn">가격</button>
-        <button class="filter-btn">관심도</button>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="logo" href="#top" aria-label="GongMoA 홈">
+          <!-- <span class="logo-mark">SG</span> -->
+          <span>GongMoA</span>
+        </a>
+        <nav class="main-nav" aria-label="주요 메뉴">
+          <a href="#performances">공연찾기</a>
+          <a href="#recommend">추천공연</a>
+          <a href="#news">뉴스룸</a>
+          <a href="#footer">문의</a>
+        </nav>
+        <a class="btn btn-primary" href="#performances">공연 등록하기</a>
       </div>
+    </header>
 
-      <!-- 추천 공연 -->
-      <section>
-        <h2 class="section-title">오늘의 추천 공연</h2>
-
-        <div class="recommend-list" id="recommendList" aria-label="필터별 추천 공연">
-          <article
-            class="recommend-card"
-            style="
-              --recommend-image: url(&quot;images/recommend-title.jpg&quot;);
-            "
+    <main id="top">
+      <section class="hero" aria-labelledby="heroTitle">
+        <div class="shell hero-inner">
+          <span class="eyebrow" id="heroEyebrow"
+            >GongMoA Discovery Platform</span
           >
-            <div>
-              <span class="tag">공연명 추천</span>
-              <h2>엘리멘탈 앙상블 거리공연</h2>
-              <p>오늘 가장 눈에 띄는 공연명을 기준으로 추천해요.</p>
-            </div>
-            <button>자세히 보기</button>
-          </article>
-
-          <article
-            class="recommend-card"
-            style="
-              --recommend-image: url(&quot;images/recommend-place.jpg&quot;);
-            "
-          >
-            <div>
-              <span class="tag">장소 추천</span>
-              <h2>대구오페라하우스 갈라 콘서트</h2>
-              <p>공연장 분위기와 접근성을 기준으로 골랐어요.</p>
-            </div>
-            <button>자세히 보기</button>
-          </article>
-
-          <article
-            class="recommend-card"
-            style="
-              --recommend-image: url(&quot;images/recommend-area.jpg&quot;);
-            "
-          >
-            <div>
-              <span class="tag">지역 추천</span>
-              <h2>동성로 주말 버스킹</h2>
-              <p>가까운 지역에서 가볍게 즐기기 좋은 공연이에요.</p>
-            </div>
-            <button>자세히 보기</button>
-          </article>
-
-          <article
-            class="recommend-card"
-            style="
-              --recommend-image: url(&quot;images/recommend-genre.jpg&quot;);
-            "
-          >
-            <div>
-              <span class="tag">장르 추천</span>
-              <h2>청라언덕 클래식 산책</h2>
-              <p>선호 장르에 맞춰 감상하기 좋은 클래식 공연이에요.</p>
-            </div>
-            <button>자세히 보기</button>
-          </article>
-
-          <article
-            class="recommend-card"
-            style="--recommend-image: url(&quot;images/recommend-age.jpg&quot;)"
-          >
-            <div>
-              <span class="tag">연령층 추천</span>
-              <h2>어린이 가족 음악회</h2>
-              <p>가족과 함께 보기 좋은 연령 맞춤 공연이에요.</p>
-            </div>
-            <button>자세히 보기</button>
-          </article>
-
-          <article
-            class="recommend-card"
-            style="
-              --recommend-image: url(&quot;images/recommend-price.jpg&quot;);
-            "
-          >
-            <div>
-              <span class="tag">가격 추천</span>
-              <h2>무료 국악 야외공연</h2>
-              <p>부담 없이 즐길 수 있는 무료 공연을 추천해요.</p>
-            </div>
-            <button>자세히 보기</button>
-          </article>
-
-          <article
-            class="recommend-card"
-            style="
-              --recommend-image: url(&quot;images/recommend-interest.jpg&quot;);
-            "
-          >
-            <div>
-              <span class="tag">관심도 추천</span>
-              <h2>이번 주 인기 뮤지컬 갈라</h2>
-              <p>관심 등록이 많은 공연을 기준으로 골랐어요.</p>
-            </div>
-            <button>자세히 보기</button>
-          </article>
+          <h1 class="hero-title" id="heroTitle">
+            작은 무대도 쉽게<br />발견되는 공연 플랫폼
+          </h1>
+          <p class="hero-copy" id="heroCopy">
+            무료 공연, 소규모 공연, 지역 공연,<br />
+            장르별 공연을 한 곳에서 탐색하고<br />
+            공연자는 직접 홍보할 수 있습니다.
+          </p>
+          <div
+            class="hero-meta"
+            id="heroMeta"
+            aria-label="히어로 공연 요약"
+          ></div>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#performances">공연 둘러보기</a>
+            <button class="btn btn-ghost" id="openAiRecommend" type="button">
+              AI추천
+            </button>
+          </div>
         </div>
       </section>
 
-      <!-- 공연 피드 -->
-      <section>
-        <h2 class="section-title">공연 피드</h2>
+      <section
+        class="section shell"
+        id="performances"
+        aria-labelledby="performanceTitle"
+      >
+        <div class="section-head">
+          <span class="section-label">Featured Performance</span>
+          <h2 class="section-title" id="performanceTitle">
+            지금 찾으실 만한 공연
+          </h2>
+          <p class="section-copy" id="performanceStatus">
+            공연 데이터를 불러오는 중입니다.
+          </p>
+        </div>
 
-        <div class="feed-list" id="feedList"></div>
-        <div class="feed-loader" id="feedLoader" aria-live="polite">
-          공연을 불러오는 중
+        <div class="card-grid featured-grid" id="performanceGrid"></div>
+      </section>
+
+      <section
+        class="section shell"
+        id="recommend"
+        aria-labelledby="recommendTitle"
+      >
+        <div class="section-head">
+          <span class="section-label">Recommendation</span>
+          <h2 class="section-title" id="recommendTitle">추천 필터</h2>
+          <p class="section-copy" id="recommendStatus">
+            지역, 공연장르, 가격 기준으로 추천 공연을 확인할 수 있습니다.
+          </p>
+        </div>
+
+        <div class="filter-panel">
+          <div class="filter-row" aria-label="추천 필터">
+            <button
+              class="filter-chip active"
+              type="button"
+              data-filter-type="all"
+            >
+              전체 공연
+            </button>
+            <label class="filter-field" for="regionFilter">
+              <!-- <span class="filter-label">지역 선택</span> -->
+              <select class="filter-select" id="regionFilter">
+                <option value="">전체 지역</option>
+              </select>
+            </label>
+            <label class="filter-field" for="genreFilter">
+              <select class="filter-select" id="genreFilter">
+                <option value="">전체 장르</option>
+              </select>
+            </label>
+            <label class="filter-field" for="priceFilter">
+              <select class="filter-select" id="priceFilter">
+                <option value="">전체 가격</option>
+                <option value="0-10000">0원부터 1만원</option>
+                <option value="10000-30000">1만원부터 3만원</option>
+                <option value="30000-50000">3만원부터 5만원</option>
+                <option value="50000-100000">5만원부터 10만원</option>
+                <option value="100000-">10만원 이상</option>
+              </select>
+            </label>
+          </div>
+          <div class="card-grid" id="recommendGrid"></div>
         </div>
       </section>
 
-      <!-- 하단 네비게이션 -->
-      <nav>
-        <a href="#" class="active">
-          <span class="nav-icon">🏠</span>
-          홈
-        </a>
-        <a href="#">
-          <span class="nav-icon">🔍</span>
-          검색
-        </a>
-        <a href="#">
-          <span class="nav-icon">＋</span>
-          등록
-        </a>
-        <a href="#">
-          <span class="nav-icon">♡</span>
-          관심
-        </a>
-        <a href="#">
-          <span class="nav-icon">👤</span>
-          내정보
-        </a>
-      </nav>
+      <section class="section shell" id="news" aria-labelledby="newsTitle">
+        <div class="section-head">
+          <span class="section-label">Newsroom</span>
+          <h2 class="section-title" id="newsTitle">공연 소식과 공지</h2>
+        </div>
+
+        <div class="card-grid news-grid">
+          <article class="news-card">
+            <span class="news-type">Notice</span>
+            <h3>공연 등록 기능 준비 중</h3>
+            <p>
+              공연자가 직접 무대를 소개하고 관객에게 노출할 수 있는 등록 흐름을
+              설계합니다.
+            </p>
+          </article>
+          <article class="news-card">
+            <span class="news-type">Trend</span>
+            <h3>무료 공연 큐레이션 강화</h3>
+            <p>
+              무료 공연, 야외 공연, 소규모 공연을 더 쉽게 찾을 수 있는 필터를
+              준비합니다.
+            </p>
+          </article>
+          <article class="news-card">
+            <span class="news-type">Popular</span>
+            <h3>지역 공연 탐색 UX 개선</h3>
+            <p>
+              지역과 장르를 기준으로 빠르게 공연을 훑어볼 수 있는 카드형
+              레이아웃입니다.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <div class="ai-modal" id="aiRecommendModal" aria-hidden="true">
+      <div
+        class="ai-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="aiDialogTitle"
+      >
+        <div class="ai-dialog-head">
+          <div>
+            <h2 class="ai-dialog-title" id="aiDialogTitle">AI 공연 추천</h2>
+            <p class="ai-dialog-copy">
+              지금의 기분과 취향을 알려주면 현재 공연 목록 중 어울리는 공연을
+              추천합니다.
+            </p>
+          </div>
+          <button
+            class="icon-button"
+            id="closeAiRecommend"
+            type="button"
+            aria-label="AI 추천 닫기"
+          >
+            ×
+          </button>
+        </div>
+        <div class="ai-dialog-body">
+          <form class="ai-form" id="aiRecommendForm">
+            <div class="ai-form-grid">
+              <div class="ai-field">
+                <label for="aiMood">현재기분</label>
+                <select id="aiMood" name="mood" required>
+                  <option value="편안한">편안한</option>
+                  <option value="행복한">행복한</option>
+                  <option value="의욕적인">의욕적인</option>
+                  <option value="우울한">우울한</option>
+                  <option value="불안한">불안한</option>
+                  <option value="화나는">화나는</option>
+                  <option value="피곤한">피곤한</option>
+                  <option value="혼란스러운">혼란스러운</option>
+                  <option value="무감정한">무감정한</option>
+                  <option value="기타">기타</option>
+                </select>
+              </div>
+              <div class="ai-field">
+                <label for="aiColor">좋아하는색</label>
+                <select id="aiColor" name="color" required>
+                  <option value="빨강">빨강</option>
+                  <option value="주황">주황</option>
+                  <option value="노랑">노랑</option>
+                  <option value="초록">초록</option>
+                  <option value="파랑">파랑</option>
+                  <option value="남색">남색</option>
+                  <option value="보라">보라</option>
+                  <option value="분홍">분홍</option>
+                  <option value="검정">검정</option>
+                  <option value="하양">하양</option>
+                  <option value="기타">기타</option>
+                </select>
+              </div>
+              <div class="ai-field">
+                <label for="aiMusic">평소듣는 음악장르</label>
+                <select id="aiMusic" name="music" required>
+                  <option value="팝">팝</option>
+                  <option value="힙합/랩">힙합/랩</option>
+                  <option value="록">록</option>
+                  <option value="알앤비/소울">알앤비/소울</option>
+                  <option value="일렉트로닉 댄스 뮤직">
+                    일렉트로닉 댄스 뮤직
+                  </option>
+                  <option value="클래식">클래식</option>
+                  <option value="재즈">재즈</option>
+                  <option value="컨트리">컨트리</option>
+                  <option value="라틴">라틴</option>
+                  <option value="케이팝">케이팝</option>
+                  <option value="기타">기타</option>
+                </select>
+              </div>
+              <div class="ai-field">
+                <label for="aiPerson">같이 공연보고싶은사람</label>
+                <select id="aiPerson" name="person" required>
+                  <option value="가족">가족</option>
+                  <option value="연인">연인</option>
+                  <option value="친구">친구</option>
+                  <option value="직장동료">직장동료</option>
+                  <option value="사제지간">사제지간</option>
+                  <option value="이웃">이웃</option>
+                  <option value="공적관계">공적관계</option>
+                  <option value="동호회지인">동호회지인</option>
+                  <option value="온라인친구">온라인친구</option>
+                  <option value="가벼운지인">가벼운지인</option>
+                  <option value="기타">기타</option>
+                </select>
+              </div>
+            </div>
+            <div class="ai-field">
+              <label for="aiContext">마지막으로 하고싶은말</label>
+              <textarea
+                id="aiContext"
+                name="context"
+                placeholder="예: 오늘은 부담 없이 기분 전환할 수 있는 공연을 보고 싶어요."
+              ></textarea>
+            </div>
+            <p class="ai-status" id="aiRecommendStatus"></p>
+            <div class="ai-dialog-actions">
+              <button
+                class="btn btn-ghost"
+                type="button"
+                id="cancelAiRecommend"
+              >
+                닫기
+              </button>
+              <button class="btn btn-primary" type="submit">추천 받기</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
+    <footer class="site-footer" id="footer">
+      <div class="shell footer-inner">
+        <div>
+          <div class="footer-brand">GongMoA</div>
+          <p>
+            무료 공연, 소규모 공연, 지역 공연을 쉽게 발견하는 공연 정보
+            웹앱입니다.
+          </p>
+        </div>
+        <div class="footer-links">
+          <a href="#performances">공연찾기</a>
+          <a href="#recommend">추천공연</a>
+          <a href="mailto:contact@GongMoA.example">문의</a>
+          <span>© 2026 GongMoA</span>
+        </div>
+      </div>
+    </footer>
     <script>
-      const filterSection = document.querySelector(".filter-section");
-      const filterButtons = document.querySelectorAll(".filter-btn");
-      let isFilterDragging = false;
-      let filterStartX = 0;
-      let filterScrollLeft = 0;
-      let filterMoved = false;
+      // API 연결 전 레이아웃과 필터 동작을 확인하기 위한 공연 mock 데이터입니다.
+      const mockPerformanceData = [
+        {
+          title: "한강 브릿지 버스킹",
+          region: "서울",
+          genre: "콘서트",
+          priceType: "무료",
+          price: "무료",
+          date: "06.14 토",
+          venue: "한강공원",
+          summary: "저녁 산책길에서 만나는 어쿠스틱 라이브 공연",
+          tag: "Live",
+          tone: "linear-gradient(135deg, #55200d, #19111a 62%, #08080d)",
+        },
+        {
+          title: "소극장 연극 밤의 대화",
+          region: "서울",
+          genre: "연극",
+          priceType: "유료",
+          price: "25,000원",
+          date: "06.19 목",
+          venue: "대학로 소극장",
+          summary: "가까운 객석에서 배우의 호흡을 느끼는 2인극",
+          tag: "Play",
+          tone: "linear-gradient(135deg, #7c2419, #211421 60%, #08080d)",
+        },
+        {
+          title: "가족 뮤지컬 피터팬",
+          region: "경기",
+          genre: "뮤지컬",
+          priceType: "유료",
+          price: "35,000원",
+          date: "06.22 일",
+          venue: "성남아트센터",
+          summary: "아이와 함께 보기 좋은 주말 가족 뮤지컬",
+          tag: "Musical",
+          tone: "linear-gradient(135deg, #a94413, #1d1f2b 62%, #08080d)",
+        },
+        {
+          title: "시민 오페라 갈라",
+          region: "인천",
+          genre: "클래식",
+          priceType: "무료",
+          price: "무료",
+          date: "06.27 금",
+          venue: "인천문화예술회관",
+          summary: "오페라 명곡을 부담 없이 즐기는 열린 무대",
+          tag: "Classic",
+          tone: "linear-gradient(135deg, #c66a16, #24202a 62%, #08080d)",
+        },
+        {
+          title: "부산 재즈 클럽 나이트",
+          region: "부산",
+          genre: "콘서트",
+          priceType: "유료",
+          price: "40,000원",
+          date: "07.04 금",
+          venue: "해운대 라이브홀",
+          summary: "늦은 밤 도시 분위기와 어울리는 재즈 셋 리스트",
+          tag: "Jazz",
+          tone: "linear-gradient(135deg, #8b1e13, #1d2230 62%, #08080d)",
+        },
+        {
+          title: "어린이를 위한 클래식 산책",
+          region: "경기",
+          genre: "클래식",
+          priceType: "무료",
+          price: "무료",
+          date: "07.06 일",
+          venue: "수원시민회관",
+          summary: "처음 클래식을 만나는 어린이를 위한 해설 공연",
+          tag: "Kids",
+          tone: "linear-gradient(135deg, #b04b14, #211927 62%, #08080d)",
+        },
+      ];
 
-      if (filterSection) {
-        filterSection.addEventListener("pointerdown", (event) => {
-          isFilterDragging = true;
-          filterMoved = false;
-          filterStartX = event.clientX;
-          filterScrollLeft = filterSection.scrollLeft;
-          filterSection.classList.add("is-dragging");
-          filterSection.setPointerCapture(event.pointerId);
-        });
+      const performanceGrid = document.querySelector("#performanceGrid");
+      const recommendGrid = document.querySelector("#recommendGrid");
+      const performanceStatus = document.querySelector("#performanceStatus");
+      const recommendStatus = document.querySelector("#recommendStatus");
+      const heroSection = document.querySelector(".hero");
+      const heroEyebrow = document.querySelector("#heroEyebrow");
+      const heroTitle = document.querySelector("#heroTitle");
+      const heroCopy = document.querySelector("#heroCopy");
+      const heroMeta = document.querySelector("#heroMeta");
+      const regionFilter = document.querySelector("#regionFilter");
+      const genreFilter = document.querySelector("#genreFilter");
+      const priceFilter = document.querySelector("#priceFilter");
+      const filterButtons = document.querySelectorAll(".filter-chip");
+      const openAiRecommend = document.querySelector("#openAiRecommend");
+      const aiRecommendModal = document.querySelector("#aiRecommendModal");
+      const closeAiRecommend = document.querySelector("#closeAiRecommend");
+      const cancelAiRecommend = document.querySelector("#cancelAiRecommend");
+      const aiRecommendForm = document.querySelector("#aiRecommendForm");
+      const aiRecommendStatus = document.querySelector("#aiRecommendStatus");
+      let currentPerformanceData = [];
+      let heroSlideIndex = 0;
+      let heroSlideTimer;
 
-        filterSection.addEventListener("pointermove", (event) => {
-          if (!isFilterDragging) return;
+      const escapeHTML = (value) =>
+        String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
 
-          const moveX = event.clientX - filterStartX;
-          if (Math.abs(moveX) > 5) {
-            filterMoved = true;
-          }
-
-          filterSection.scrollLeft = filterScrollLeft - moveX;
-        });
-
-        const stopFilterDrag = (event) => {
-          if (!isFilterDragging) return;
-
-          isFilterDragging = false;
-          filterSection.classList.remove("is-dragging");
-
-          if (filterSection.hasPointerCapture(event.pointerId)) {
-            filterSection.releasePointerCapture(event.pointerId);
-          }
-        };
-
-        filterSection.addEventListener("pointerup", stopFilterDrag);
-        filterSection.addEventListener("pointercancel", stopFilterDrag);
-        filterSection.addEventListener("pointerleave", stopFilterDrag);
-      }
-
-      filterButtons.forEach((button) => {
-        button.addEventListener("click", (event) => {
-          if (filterMoved) {
-            event.preventDefault();
-            filterMoved = false;
-            return;
-          }
-
-          filterButtons.forEach((btn) => btn.classList.remove("active"));
-          button.classList.add("active");
-        });
-      });
-
-      let performances = [];
-
-      const fetchPerformances = () => {
-        if (feedLoader) {
-          feedLoader.textContent = "공연을 불러오는 중";
+      const getSafePosterUrl = (url) => {
+        if (!url) {
+          return "";
         }
-
-        if (!window.google || !google.script || !google.script.run) {
-          feedLoader.textContent = "GAS 웹앱으로 실행해야 API를 불러올 수 있습니다";
-          return;
-        }
-
-        google.script.run
-          .withSuccessHandler((items) => {
-            performances = Array.isArray(items) ? items : [];
-            renderedCardCount = 0;
-            isLoadingCards = false;
-            feedList.innerHTML = "";
-            updateRecommendCards(performances);
-            loadMoreCards();
-          })
-          .withFailureHandler((error) => {
-            feedLoader.textContent = "공연 정보를 불러오지 못했습니다";
-            console.error(error);
-          })
-          .getPerformances();
-      };
-
-      const feedList = document.querySelector("#feedList");
-      const feedLoader = document.querySelector("#feedLoader");
-      const recommendList = document.querySelector("#recommendList");
-      const cardsPerLoad = 3;
-      let renderedCardCount = 0;
-      let isLoadingCards = false;
-
-      const escapeHtml = (value) =>
-        String(value ?? "")
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-
-      const getSafeImageUrl = (url) => {
-        if (!url) return "";
 
         return String(url).replace(/^http:\/\//, "https://");
       };
 
-      const recommendationLabels = [
-        "공연명 추천",
-        "장소 추천",
-        "지역 추천",
-        "장르 추천",
-        "연령층 추천",
-        "가격 추천",
-        "관심도 추천",
-      ];
+      const getPriceLabel = (performance) =>
+        performance.priceType === "무료"
+          ? "무료"
+          : performance.price || "가격 확인";
 
-      const updateRecommendCards = (items) => {
-        if (!recommendList || !items.length) return;
+      const getLowestPrice = (performance) => {
+        if (performance.priceType === "무료" || performance.price === "무료") {
+          return 0;
+        }
 
-        const cards = recommendList.querySelectorAll(".recommend-card");
+        const numbers = String(performance.price || "")
+          .match(/\d[\d,]*/g)
+          ?.map((value) => Number(value.replace(/,/g, "")))
+          .filter((value) => Number.isFinite(value));
 
-        cards.forEach((card, index) => {
-          const performance = items[index % items.length];
-          const posterUrl = getSafeImageUrl(performance.poster);
-          const tag = card.querySelector(".tag");
-          const title = card.querySelector("h2");
-          const description = card.querySelector("p");
+        if (!numbers || !numbers.length) {
+          return null;
+        }
 
-          if (posterUrl) {
-            card.style.setProperty("--recommend-image", `url("${posterUrl.replaceAll('"', "%22")}")`);
-          } else {
-            card.style.removeProperty("--recommend-image");
-          }
+        return Math.min(...numbers);
+      };
 
-          if (tag) {
-            tag.textContent = recommendationLabels[index] || "추천 공연";
-          }
+      const isInPriceRange = (performance, range) => {
+        if (!range) {
+          return true;
+        }
 
-          if (title) {
-            title.textContent = performance.title || "추천 공연";
-          }
+        const lowestPrice = getLowestPrice(performance);
 
-          if (description) {
-            const place = performance.place || "공연장 정보 확인";
-            const genre = performance.genre || "장르 정보 확인";
-            description.textContent = `${place} · ${genre}`;
-          }
-        });
+        if (lowestPrice === null) {
+          return false;
+        }
+
+        const [min, max] = range.split("-").map((value) => Number(value));
+
+        if (Number.isNaN(max)) {
+          return lowestPrice >= min;
+        }
+
+        return lowestPrice >= min && lowestPrice < max;
       };
 
       const createPerformanceCard = (performance) => {
         const card = document.createElement("article");
-        card.className = "feed-card is-new";
-        const posterUrl = getSafeImageUrl(performance.poster);
-        const posterStyle = posterUrl
-          ? ` style="background-image: url('${escapeHtml(posterUrl)}')"`
-          : "";
-        const posterClass = posterUrl ? "feed-img has-poster" : "feed-img";
-        const posterText = posterUrl ? "" : "공연 이미지";
-
+        card.className = "performance-card";
         card.innerHTML = `
-          <div class="${posterClass}"${posterStyle}>${posterText}</div>
-          <div class="feed-content">
-            <div class="feed-header">
-              <h3 class="feed-title">${escapeHtml(performance.title)}</h3>
-              <span class="${performance.isFree ? "price-free" : "price-paid"}">${escapeHtml(performance.price)}</span>
+          <div class="poster">
+            <span class="poster-label">${escapeHTML(performance.tag)}</span>
+          </div>
+          <div class="card-body">
+            <div class="card-topline">
+              <span class="badge ${performance.priceType === "무료" ? "free" : "paid"}" title="${escapeHTML(getPriceLabel(performance))}">${escapeHTML(getPriceLabel(performance))}</span>
+              <span class="card-date">${escapeHTML(performance.date)}</span>
             </div>
-            <p class="feed-info">
-              장소: ${escapeHtml(performance.place)}<br />
-              날짜: ${escapeHtml(performance.date)}<br />
-              장르: ${escapeHtml(performance.genre)}
-            </p>
-            <div class="feed-actions">
-              <button class="like-btn">♡ 관심</button>
-              <button class="detail-btn">상세보기</button>
+            <h3 class="card-title">${escapeHTML(performance.title)}</h3>
+            <p class="card-caption">${escapeHTML(performance.summary)}</p>
+            ${
+              performance.recommendReason
+                ? `<p class="ai-reason">${escapeHTML(performance.recommendReason)}</p>`
+                : ""
+            }
+            <div class="card-meta">
+              <span>${escapeHTML(performance.region)}</span>
+              <span>${escapeHTML(performance.genre)}</span>
+              <span>${escapeHTML(performance.venue)}</span>
+            </div>
+            <div class="card-footer">
+              <a class="card-link" href="#performances" aria-label="${escapeHTML(performance.title)} 자세히 보기">자세히 보기</a>
+              <div class="feed-actions" aria-label="${escapeHTML(performance.title)} 피드 액션">
+                <button class="feed-action" type="button" data-action="favorite" data-performance-id="${escapeHTML(performance.id)}">관심</button>
+                <button class="feed-action" type="button">공유</button>
+              </div>
             </div>
           </div>
         `;
 
+        const poster = card.querySelector(".poster");
+        const posterUrl = getSafePosterUrl(performance.poster);
+        poster.style.setProperty("--poster-tone", performance.tone);
+
+        if (posterUrl) {
+          poster.style.setProperty(
+            "--poster-image",
+            `url("${posterUrl.replace(/"/g, "%22")}")`,
+          );
+        }
+
         return card;
       };
 
-      const updateFeedLoader = () => {
-        if (!feedLoader) return;
+      const renderCards = (target, performances) => {
+        target.innerHTML = "";
 
-        if (renderedCardCount >= performances.length) {
-          feedLoader.textContent = "모든 공연을 불러왔습니다";
-          feedLoader.classList.add("is-complete");
-        } else {
-          feedLoader.textContent = "공연을 불러오는 중";
-          feedLoader.classList.remove("is-complete");
+        if (!performances.length) {
+          target.innerHTML =
+            '<p class="section-copy">조건에 맞는 공연이 없습니다.</p>';
+          return;
         }
+
+        performances.forEach((performance) => {
+          target.appendChild(createPerformanceCard(performance));
+        });
       };
 
-      const loadMoreCards = () => {
-        if (
-          !feedList ||
-          isLoadingCards ||
-          renderedCardCount >= performances.length
-        )
+      const setHeroSlide = (performances, index) => {
+        if (!heroSection || !heroTitle || !heroCopy || !performances.length) {
           return;
+        }
 
-        isLoadingCards = true;
-        updateFeedLoader();
+        const performance = performances[index % performances.length];
+        const posterUrl = getSafePosterUrl(performance.poster);
+
+        heroSection.classList.add("is-changing");
 
         window.setTimeout(() => {
-          const nextCards = performances.slice(
-            renderedCardCount,
-            renderedCardCount + cardsPerLoad,
-          );
-          const fragment = document.createDocumentFragment();
+          heroTitle.textContent = performance.title;
+          heroCopy.textContent = `${performance.date} · ${performance.venue} · ${performance.region} · ${performance.genre}`;
 
-          nextCards.forEach((performance) => {
-            fragment.appendChild(createPerformanceCard(performance));
-          });
+          if (heroEyebrow) {
+            heroEyebrow.textContent = "Upcoming Performance";
+          }
 
-          feedList.appendChild(fragment);
-          renderedCardCount += nextCards.length;
-          isLoadingCards = false;
-          updateFeedLoader();
-        }, 300);
+          if (heroMeta) {
+            heroMeta.innerHTML = `
+              <span>${escapeHTML(getPriceLabel(performance))}</span>
+              <span>${escapeHTML(performance.region)}</span>
+              <span>${escapeHTML(performance.genre)}</span>
+            `;
+          }
+
+          heroSection.style.setProperty("--hero-tone", performance.tone);
+
+          if (posterUrl) {
+            heroSection.style.setProperty(
+              "--hero-image",
+              `url("${posterUrl.replace(/"/g, "%22")}")`,
+            );
+          } else {
+            heroSection.style.removeProperty("--hero-image");
+          }
+
+          heroSection.classList.remove("is-changing");
+        }, 180);
       };
 
-      if (feedList && feedLoader) {
-        fetchPerformances();
-
-        const feedObserver = new IntersectionObserver(
-          (entries) => {
-            if (entries.some((entry) => entry.isIntersecting)) {
-              loadMoreCards();
-            }
-          },
-          {
-            rootMargin: "160px 0px",
-          },
+      const startHeroSlideshow = (performances) => {
+        const heroPerformances = performances.filter(
+          (performance) =>
+            performance.title && performance.title !== "공연명 확인",
         );
 
-        feedObserver.observe(feedLoader);
-      }
+        window.clearInterval(heroSlideTimer);
 
-      document.addEventListener("click", (event) => {
-        const likeButton = event.target.closest(".like-btn");
-        if (!likeButton) return;
+        if (!heroPerformances.length) {
+          return;
+        }
 
-        if (likeButton.textContent.includes("관심중")) {
-          likeButton.textContent = "♡ 관심";
-        } else {
-          likeButton.textContent = "♥ 관심중";
+        heroSlideIndex = 0;
+        setHeroSlide(heroPerformances, heroSlideIndex);
+
+        heroSlideTimer = window.setInterval(() => {
+          heroSlideIndex = (heroSlideIndex + 1) % heroPerformances.length;
+          setHeroSlide(heroPerformances, heroSlideIndex);
+        }, 5000);
+      };
+
+      const normalizePerformance = (performance, index) => ({
+        id: performance.id || `mock-${index}`,
+        title: performance.title || "공연명 확인",
+        region: performance.region || performance.area || "지역 확인",
+        genre: performance.genre || "장르 확인",
+        price: performance.price || "",
+        priceType:
+          performance.priceType ||
+          (performance.isFree || performance.price === "무료"
+            ? "무료"
+            : "유료"),
+        date: performance.date || performance.startDate || "일정 확인",
+        venue: performance.venue || performance.place || "장소 확인",
+        summary:
+          performance.summary ||
+          performance.description ||
+          "공연 소개가 준비되는 중입니다.",
+        tag: performance.tag || performance.genre || "Stage",
+        poster: performance.poster || "",
+        tone:
+          performance.tone ||
+          mockPerformanceData[index % mockPerformanceData.length].tone,
+      });
+
+      const syncSelectOptions = (
+        select,
+        values,
+        defaultLabel,
+        selectedValue,
+      ) => {
+        if (!select) {
+          return;
+        }
+
+        select.innerHTML = `<option value="">${defaultLabel}</option>`;
+
+        const optionValues = values
+          .filter(
+            (value) => value && value !== "지역 확인" && value !== "장르 확인",
+          )
+          .sort((a, b) => a.localeCompare(b, "ko"));
+
+        optionValues.forEach((value) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = value;
+          select.appendChild(option);
+        });
+
+        if (optionValues.includes(selectedValue)) {
+          select.value = selectedValue;
+        }
+      };
+
+      const syncFilterOptions = (data) => {
+        const selectedRegion = regionFilter ? regionFilter.value : "";
+        const selectedGenre = genreFilter ? genreFilter.value : "";
+        const regions = [
+          ...new Set(data.map((performance) => performance.region)),
+        ]
+          .filter((region) => region && region !== "지역 확인")
+          .sort((a, b) => a.localeCompare(b, "ko"));
+        const genres = [
+          ...new Set(data.map((performance) => performance.genre)),
+        ]
+          .filter((genre) => genre && genre !== "장르 확인")
+          .sort((a, b) => a.localeCompare(b, "ko"));
+
+        syncSelectOptions(regionFilter, regions, "전체 지역", selectedRegion);
+        syncSelectOptions(genreFilter, genres, "전체 장르", selectedGenre);
+      };
+
+      const getFilteredPerformances = (data) => {
+        const selectedRegion = regionFilter ? regionFilter.value : "";
+        const selectedGenre = genreFilter ? genreFilter.value : "";
+        const selectedPrice = priceFilter ? priceFilter.value : "";
+        let filteredData = data;
+
+        if (selectedRegion) {
+          filteredData = filteredData.filter(
+            (performance) => performance.region === selectedRegion,
+          );
+        }
+
+        if (selectedGenre) {
+          filteredData = filteredData.filter(
+            (performance) => performance.genre === selectedGenre,
+          );
+        }
+
+        if (selectedPrice) {
+          filteredData = filteredData.filter((performance) =>
+            isInPriceRange(performance, selectedPrice),
+          );
+        }
+
+        return filteredData;
+      };
+
+      const renderPerformances = (data) => {
+        currentPerformanceData = data.map(normalizePerformance);
+        syncFilterOptions(currentPerformanceData);
+        const filteredData = getFilteredPerformances(currentPerformanceData);
+
+        renderCards(performanceGrid, currentPerformanceData.slice(0, 4));
+        renderCards(recommendGrid, filteredData);
+        startHeroSlideshow(currentPerformanceData);
+
+        if (performanceStatus) {
+          performanceStatus.textContent = `${currentPerformanceData.length}개의 공연 정보를 불러왔습니다. 지역, 장르, 가격 기준으로 추천을 필터링할 수 있습니다.`;
+        }
+
+        if (recommendStatus) {
+          recommendStatus.textContent =
+            "지역, 공연장르, 가격 기준으로 추천 공연을 확인할 수 있습니다.";
+        }
+      };
+
+      const openAiModal = () => {
+        if (!aiRecommendModal) {
+          return;
+        }
+
+        aiRecommendModal.classList.add("is-open");
+        aiRecommendModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        aiRecommendModal.querySelector("select")?.focus();
+      };
+
+      const closeAiModal = () => {
+        if (!aiRecommendModal) {
+          return;
+        }
+
+        aiRecommendModal.classList.remove("is-open");
+        aiRecommendModal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        openAiRecommend?.focus();
+      };
+
+      const getAiPreference = () => {
+        const formData = new FormData(aiRecommendForm);
+
+        return {
+          mood: formData.get("mood"),
+          color: formData.get("color"),
+          music: formData.get("music"),
+          person: formData.get("person"),
+          context: formData.get("context") || "",
+        };
+      };
+
+      const getLocalAiRecommendations = (preference) => {
+        const musicKeywordMap = {
+          "힙합/랩": ["콘서트"],
+          록: ["콘서트"],
+          "알앤비/소울": ["콘서트", "재즈"],
+          "일렉트로닉 댄스 뮤직": ["콘서트"],
+          클래식: ["클래식"],
+          재즈: ["재즈", "콘서트"],
+          케이팝: ["콘서트"],
+          팝: ["콘서트", "뮤지컬"],
+        };
+        const preferredGenres = musicKeywordMap[preference.music] || [];
+        const scored = currentPerformanceData.map((performance) => {
+          let score = 0;
+
+          if (
+            preferredGenres.some((genre) => performance.genre.includes(genre))
+          ) {
+            score += 3;
+          }
+
+          if (
+            preference.person === "가족" &&
+            performance.genre.includes("뮤지컬")
+          ) {
+            score += 2;
+          }
+
+          if (["우울한", "불안한", "피곤한"].includes(preference.mood)) {
+            score += performance.priceType === "무료" ? 1 : 0;
+          }
+
+          return {
+            ...performance,
+            recommendReason: `${preference.mood} 기분과 ${preference.music} 취향을 기준으로 어울리는 공연입니다.`,
+            score,
+          };
+        });
+
+        return scored.sort((a, b) => b.score - a.score).slice(0, 4);
+      };
+
+      const renderAiRecommendations = (result, preference) => {
+        const recommendations = Array.isArray(result?.recommendations)
+          ? result.recommendations
+          : [];
+
+        const matchedPerformances = recommendations
+          .map((recommendation) => {
+            const matched = currentPerformanceData.find(
+              (performance) =>
+                performance.id === recommendation.id ||
+                performance.title === recommendation.title,
+            );
+
+            if (!matched) {
+              return null;
+            }
+
+            return {
+              ...matched,
+              recommendReason: recommendation.reason || result.message || "",
+            };
+          })
+          .filter(Boolean);
+
+        const aiPerformances = matchedPerformances.length
+          ? matchedPerformances
+          : getLocalAiRecommendations(preference);
+
+        renderCards(recommendGrid, aiPerformances);
+
+        if (recommendStatus) {
+          recommendStatus.textContent =
+            result?.message ||
+            "AI가 현재 입력한 취향에 맞는 공연을 추천했습니다.";
+        }
+
+        document.querySelector("#recommend")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      };
+
+      const requestAiRecommendations = (preference) => {
+        if (aiRecommendStatus) {
+          aiRecommendStatus.textContent = "AI가 공연 목록을 분석하는 중입니다.";
+        }
+
+        if (window.google && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler((result) => {
+              renderAiRecommendations(result, preference);
+              closeAiModal();
+            })
+            .withFailureHandler((error) => {
+              console.error(error);
+              renderAiRecommendations(null, preference);
+
+              if (recommendStatus) {
+                recommendStatus.textContent =
+                  "AI 추천 호출에 실패해 현재 공연 목록 기준으로 추천을 표시했습니다.";
+              }
+
+              closeAiModal();
+            })
+            .recommendPerformances(preference, currentPerformanceData);
+          return;
+        }
+
+        renderAiRecommendations(null, preference);
+        closeAiModal();
+      };
+
+      const loadPerformances = () => {
+        // GAS 웹앱 배포 환경에서는 Code.gs의 getPerformances()를 호출합니다.
+        if (window.google && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler((data) => {
+              const performances = Array.isArray(data) ? data : [];
+              renderPerformances(performances);
+            })
+            .withFailureHandler((error) => {
+              console.error(error);
+              renderPerformances(mockPerformanceData);
+
+              if (performanceStatus) {
+                performanceStatus.textContent =
+                  "API 연결에 실패해 예시 공연 데이터로 화면을 표시합니다.";
+              }
+            })
+            .getPerformances();
+          return;
+        }
+
+        // 로컬 HTML 파일로 확인할 때는 mock 데이터로 동작합니다.
+        renderPerformances(mockPerformanceData);
+      };
+
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          filterButtons.forEach((item) => item.classList.remove("active"));
+          button.classList.add("active");
+          if (regionFilter) regionFilter.value = "";
+          if (genreFilter) genreFilter.value = "";
+          if (priceFilter) priceFilter.value = "";
+          renderPerformances(currentPerformanceData);
+        });
+      });
+
+      [regionFilter, genreFilter, priceFilter].forEach((select) => {
+        select?.addEventListener("change", () => {
+          filterButtons.forEach((item) => item.classList.remove("active"));
+          renderPerformances(currentPerformanceData);
+        });
+      });
+
+      openAiRecommend?.addEventListener("click", openAiModal);
+      closeAiRecommend?.addEventListener("click", closeAiModal);
+      cancelAiRecommend?.addEventListener("click", closeAiModal);
+
+      aiRecommendModal?.addEventListener("click", (event) => {
+        if (event.target === aiRecommendModal) {
+          closeAiModal();
         }
       });
+
+      document.addEventListener("keydown", (event) => {
+        if (
+          event.key === "Escape" &&
+          aiRecommendModal?.classList.contains("is-open")
+        ) {
+          closeAiModal();
+        }
+      });
+
+      aiRecommendForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        requestAiRecommendations(getAiPreference());
+      });
+
+      document.addEventListener("click", (event) => {
+        const favoriteButton = event.target.closest('[data-action="favorite"]');
+
+        if (!favoriteButton) {
+          return;
+        }
+
+        const performance = currentPerformanceData.find(
+          (item) => item.id === favoriteButton.dataset.performanceId,
+        );
+
+        if (!performance) {
+          return;
+        }
+
+        const markFavorite = () => {
+          favoriteButton.textContent = "관심중";
+          favoriteButton.setAttribute("aria-pressed", "true");
+        };
+
+        if (window.google && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(markFavorite)
+            .withFailureHandler((error) => {
+              console.error(error);
+              favoriteButton.textContent = "저장 실패";
+            })
+            .saveFavorite(performance);
+          return;
+        }
+
+        markFavorite();
+      });
+
+      loadPerformances();
     </script>
   </body>
 </html>
