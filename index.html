@@ -23,6 +23,7 @@
         --border: rgba(255, 255, 255, 0.14);
         --radius: 10px;
         --shadow: 0 28px 80px rgba(0, 0, 0, 0.46);
+        --header-height: 76px;
       }
 
       * {
@@ -239,8 +240,9 @@
       .hero {
         position: relative;
         overflow: hidden;
-        min-height: 640px;
-        border-bottom: 1px solid var(--border);
+        min-height: calc(100vh - var(--header-height));
+        min-height: calc(100dvh - var(--header-height));
+        border-bottom: 0px solid var(--border);
         background:
           linear-gradient(
             90deg,
@@ -274,7 +276,8 @@
         position: relative;
         z-index: 1;
         display: grid;
-        height: 640px;
+        min-height: calc(100vh - var(--header-height));
+        min-height: calc(100dvh - var(--header-height));
         align-content: center;
         gap: 24px;
         padding: 96px 0;
@@ -358,7 +361,15 @@
 
       /* Section common */
       .section {
+        display: grid;
+        min-height: calc(100vh - var(--header-height));
+        min-height: calc(100dvh - var(--header-height));
+        align-content: center;
         padding: 88px 0;
+      }
+
+      #performances {
+        padding-bottom: 140px;
       }
 
       .section-head {
@@ -482,6 +493,24 @@
         word-break: keep-all;
       }
 
+      .expandable-text.is-collapsed {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      .more-button {
+        width: fit-content;
+        border: 0;
+        background: transparent;
+        color: var(--primary-2);
+        padding: 0;
+        font-size: 13px;
+        font-weight: 950;
+        cursor: pointer;
+      }
+
       .card-meta {
         display: flex;
         flex-wrap: wrap;
@@ -523,10 +552,12 @@
 
       .feed-actions {
         display: flex;
+        flex-wrap: wrap;
         gap: 8px;
       }
 
-      .feed-action {
+      .feed-action,
+      .booking-link {
         display: inline-flex;
         min-width: 42px;
         min-height: 38px;
@@ -539,98 +570,21 @@
         font-size: 12px;
         font-weight: 950;
         cursor: pointer;
+        padding: 0 12px;
         transition:
           border-color 0.2s ease,
           background 0.2s ease,
           transform 0.2s ease;
       }
 
-      .feed-action:hover {
+      .feed-action:hover,
+      .booking-link:hover {
         border-color: rgba(255, 75, 31, 0.5);
         background: rgba(255, 75, 31, 0.12);
         transform: translateY(-2px);
       }
 
-      .card-link {
-        color: var(--primary-2);
-        font-size: 13px;
-        font-weight: 950;
-      }
-
-      /* 추천 필터 */
-      .filter-panel {
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background:
-          linear-gradient(
-            135deg,
-            rgba(255, 75, 31, 0.1),
-            rgba(255, 138, 0, 0.04)
-          ),
-          var(--surface);
-        padding: 20px;
-      }
-
-      .filter-row {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 20px;
-      }
-
-      .filter-field {
-        display: grid;
-        gap: 8px;
-        min-width: min(100%, 220px);
-      }
-
-      /* .filter-label {
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 900;
-      } */
-
-      .filter-select {
-        min-height: 44px;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--text);
-        padding: 0 42px 0 16px;
-        font-size: 13px;
-        font-weight: 900;
-        cursor: pointer;
-      }
-
-      .filter-select option {
-        background: var(--surface);
-        color: var(--text);
-      }
-
-      .filter-chip {
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--muted);
-        padding: 11px 16px;
-        font-size: 13px;
-        font-weight: 900;
-        cursor: pointer;
-        transition:
-          transform 0.2s ease,
-          background 0.2s ease,
-          color 0.2s ease,
-          border-color 0.2s ease;
-      }
-
-      .filter-chip:hover {
-        border-color: rgba(255, 75, 31, 0.45);
-        color: var(--text);
-        transform: translateY(-2px);
-      }
-
-      .filter-chip.active {
+      .booking-link {
         border-color: transparent;
         background: linear-gradient(135deg, var(--primary), var(--primary-2));
         color: #140805;
@@ -741,6 +695,7 @@
         font-weight: 900;
       }
 
+      .ai-field input,
       .ai-field select,
       .ai-field textarea {
         width: 100%;
@@ -752,6 +707,11 @@
         font: inherit;
         font-size: 14px;
         font-weight: 800;
+      }
+
+      .ai-field input::placeholder,
+      .ai-field textarea::placeholder {
+        color: rgba(248, 249, 252, 0.48);
       }
 
       .ai-field select option {
@@ -777,6 +737,14 @@
         display: flex;
         justify-content: flex-end;
         gap: 10px;
+      }
+
+      .ai-result-dialog {
+        width: min(100%, 960px);
+      }
+
+      .ai-result-grid {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
       }
 
       /* Newsroom */
@@ -861,7 +829,30 @@
         }
       }
 
+      #performances.shell {
+        width: min(calc(100% - 32px), 1480px);
+      }
+
+      .card-grid.featured-grid {
+        grid-template-columns: none;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(min(82vw, 340px), 1fr);
+        overflow-x: auto;
+        overflow-y: visible;
+        padding: 8px 4px 22px;
+        scroll-snap-type: x proximity;
+      }
+
+      .card-grid.featured-grid .performance-card {
+        min-width: 0;
+        scroll-snap-align: start;
+      }
+
       @media (max-width: 560px) {
+        :root {
+          --header-height: 68px;
+        }
+
         .shell {
           width: min(calc(100% - 32px), 1280px);
         }
@@ -880,7 +871,8 @@
 
         .hero-inner {
           width: min(calc(100vw - 32px), 1280px);
-          height: 600px;
+          min-height: calc(100vh - var(--header-height));
+          min-height: calc(100dvh - var(--header-height));
           padding: 72px 0 76px;
         }
 
@@ -930,11 +922,6 @@
           flex-direction: column;
         }
 
-        .filter-field,
-        .filter-chip {
-          width: 100%;
-        }
-
         .ai-modal {
           padding: 12px;
         }
@@ -951,6 +938,10 @@
         .section {
           padding: 64px 0;
         }
+
+        #performances {
+          padding-bottom: 120px;
+        }
       }
     </style>
   </head>
@@ -963,11 +954,16 @@
         </a>
         <nav class="main-nav" aria-label="주요 메뉴">
           <a href="#performances">공연찾기</a>
-          <a href="#recommend">추천공연</a>
           <a href="#news">뉴스룸</a>
           <a href="#footer">문의</a>
         </nav>
-        <a class="btn btn-primary" href="#performances">공연 등록하기</a>
+        <button
+          class="btn btn-primary"
+          id="openPerformanceRegister"
+          type="button"
+        >
+          공연 등록하기
+        </button>
       </div>
     </header>
 
@@ -991,7 +987,12 @@
             aria-label="히어로 공연 요약"
           ></div>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#performances">공연 둘러보기</a>
+            <a
+              class="btn btn-primary"
+              href="https://kopis.or.kr/por/main/main.do"
+              target="_blank"
+              >예매하기</a
+            >
             <button class="btn btn-ghost" id="openAiRecommend" type="button">
               AI추천
             </button>
@@ -1017,86 +1018,16 @@
         <div class="card-grid featured-grid" id="performanceGrid"></div>
       </section>
 
-      <section
-        class="section shell"
-        id="recommend"
-        aria-labelledby="recommendTitle"
-      >
-        <div class="section-head">
-          <span class="section-label">Recommendation</span>
-          <h2 class="section-title" id="recommendTitle">추천 필터</h2>
-          <p class="section-copy" id="recommendStatus">
-            지역, 공연장르, 가격 기준으로 추천 공연을 확인할 수 있습니다.
-          </p>
-        </div>
-
-        <div class="filter-panel">
-          <div class="filter-row" aria-label="추천 필터">
-            <button
-              class="filter-chip active"
-              type="button"
-              data-filter-type="all"
-            >
-              전체 공연
-            </button>
-            <label class="filter-field" for="regionFilter">
-              <!-- <span class="filter-label">지역 선택</span> -->
-              <select class="filter-select" id="regionFilter">
-                <option value="">전체 지역</option>
-              </select>
-            </label>
-            <label class="filter-field" for="genreFilter">
-              <select class="filter-select" id="genreFilter">
-                <option value="">전체 장르</option>
-              </select>
-            </label>
-            <label class="filter-field" for="priceFilter">
-              <select class="filter-select" id="priceFilter">
-                <option value="">전체 가격</option>
-                <option value="0-10000">0원부터 1만원</option>
-                <option value="10000-30000">1만원부터 3만원</option>
-                <option value="30000-50000">3만원부터 5만원</option>
-                <option value="50000-100000">5만원부터 10만원</option>
-                <option value="100000-">10만원 이상</option>
-              </select>
-            </label>
-          </div>
-          <div class="card-grid" id="recommendGrid"></div>
-        </div>
-      </section>
-
       <section class="section shell" id="news" aria-labelledby="newsTitle">
         <div class="section-head">
           <span class="section-label">Newsroom</span>
           <h2 class="section-title" id="newsTitle">공연 소식과 공지</h2>
+          <p class="section-copy" id="newsStatus">
+            공연 소식을 불러오는 중입니다.
+          </p>
         </div>
 
-        <div class="card-grid news-grid">
-          <article class="news-card">
-            <span class="news-type">Notice</span>
-            <h3>공연 등록 기능 준비 중</h3>
-            <p>
-              공연자가 직접 무대를 소개하고 관객에게 노출할 수 있는 등록 흐름을
-              설계합니다.
-            </p>
-          </article>
-          <article class="news-card">
-            <span class="news-type">Trend</span>
-            <h3>무료 공연 큐레이션 강화</h3>
-            <p>
-              무료 공연, 야외 공연, 소규모 공연을 더 쉽게 찾을 수 있는 필터를
-              준비합니다.
-            </p>
-          </article>
-          <article class="news-card">
-            <span class="news-type">Popular</span>
-            <h3>지역 공연 탐색 UX 개선</h3>
-            <p>
-              지역과 장르를 기준으로 빠르게 공연을 훑어볼 수 있는 카드형
-              레이아웃입니다.
-            </p>
-          </article>
-        </div>
+        <div class="card-grid news-grid" id="newsGrid"></div>
       </section>
     </main>
 
@@ -1217,6 +1148,154 @@
       </div>
     </div>
 
+    <div class="ai-modal" id="aiResultModal" aria-hidden="true">
+      <div
+        class="ai-dialog ai-result-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="aiResultTitle"
+      >
+        <div class="ai-dialog-head">
+          <div>
+            <h2 class="ai-dialog-title" id="aiResultTitle">AI 추천 공연</h2>
+            <p class="ai-dialog-copy" id="aiResultMessage">
+              입력한 취향에 맞는 공연을 추천했습니다.
+            </p>
+          </div>
+          <button
+            class="icon-button"
+            id="closeAiResult"
+            type="button"
+            aria-label="AI 추천 결과 닫기"
+          >
+            ×
+          </button>
+        </div>
+        <div class="ai-dialog-body">
+          <div class="card-grid ai-result-grid" id="aiResultGrid"></div>
+          <div class="ai-dialog-actions">
+            <button class="btn btn-primary" id="confirmAiResult" type="button">
+              확인
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-modal" id="performanceRegisterModal" aria-hidden="true">
+      <div
+        class="ai-dialog ai-result-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="performanceRegisterTitle"
+      >
+        <div class="ai-dialog-head">
+          <div>
+            <h2 class="ai-dialog-title" id="performanceRegisterTitle">
+              공연 등록
+            </h2>
+            <p class="ai-dialog-copy">
+              등록한 공연은 공연정보 시트에 저장되고 최신 날짜순으로 표시됩니다.
+            </p>
+          </div>
+          <button
+            class="icon-button"
+            id="closePerformanceRegister"
+            type="button"
+            aria-label="공연 등록 닫기"
+          >
+            ×
+          </button>
+        </div>
+        <div class="ai-dialog-body">
+          <form class="ai-form" id="performanceRegisterForm">
+            <div class="ai-form-grid">
+              <div class="ai-field">
+                <label for="registerTitle">제목</label>
+                <input id="registerTitle" name="title" required />
+              </div>
+              <div class="ai-field">
+                <label for="registerPoster">포스터(이미지 URL)</label>
+                <input
+                  id="registerPoster"
+                  name="poster"
+                  type="url"
+                  placeholder="https://example.com/poster.jpg"
+                />
+              </div>
+              <div class="ai-field">
+                <label for="registerDate">날자</label>
+                <input id="registerDate" name="date" type="date" required />
+              </div>
+              <div class="ai-field">
+                <label for="registerPrice">가격</label>
+                <input
+                  id="registerPrice"
+                  name="price"
+                  placeholder="무료 또는 30,000원"
+                />
+              </div>
+              <div class="ai-field">
+                <label for="registerVenue">장소</label>
+                <input id="registerVenue" name="venue" />
+              </div>
+              <div class="ai-field">
+                <label for="registerGenre">장르</label>
+                <input
+                  id="registerGenre"
+                  name="genre"
+                  placeholder="클래식, 콘서트 등"
+                />
+              </div>
+              <div class="ai-field">
+                <label for="registerMusicTitle">곡명</label>
+                <input id="registerMusicTitle" name="musicTitle" />
+              </div>
+              <div class="ai-field">
+                <label for="registerSoloist">솔리스트</label>
+                <input id="registerSoloist" name="soloist" />
+              </div>
+              <div class="ai-field">
+                <label for="registerCast">출연진</label>
+                <input id="registerCast" name="cast" />
+              </div>
+              <div class="ai-field">
+                <label for="registerConductor">지휘자</label>
+                <input id="registerConductor" name="conductor" />
+              </div>
+              <div class="ai-field">
+                <label for="registerSponsor">후원</label>
+                <input id="registerSponsor" name="sponsor" />
+              </div>
+              <div class="ai-field">
+                <label for="registerOrganizer">주최</label>
+                <input id="registerOrganizer" name="organizer" />
+              </div>
+            </div>
+            <div class="ai-field">
+              <label for="registerDescription">공연설명</label>
+              <textarea id="registerDescription" name="description"></textarea>
+            </div>
+            <div class="ai-field">
+              <label for="registerNotes">기타사항</label>
+              <textarea id="registerNotes" name="notes"></textarea>
+            </div>
+            <p class="ai-status" id="performanceRegisterStatus"></p>
+            <div class="ai-dialog-actions">
+              <button
+                class="btn btn-ghost"
+                id="cancelPerformanceRegister"
+                type="button"
+              >
+                닫기
+              </button>
+              <button class="btn btn-primary" type="submit">저장</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <footer class="site-footer" id="footer">
       <div class="shell footer-inner">
         <div>
@@ -1228,14 +1307,13 @@
         </div>
         <div class="footer-links">
           <a href="#performances">공연찾기</a>
-          <a href="#recommend">추천공연</a>
           <a href="mailto:contact@GongMoA.example">문의</a>
           <span>© 2026 GongMoA</span>
         </div>
       </div>
     </footer>
     <script>
-      // API 연결 전 레이아웃과 필터 동작을 확인하기 위한 공연 mock 데이터입니다.
+      // API 연결 전 레이아웃과 카드 렌더링을 확인하기 위한 공연 mock 데이터입니다.
       const mockPerformanceData = [
         {
           title: "한강 브릿지 버스킹",
@@ -1310,29 +1388,73 @@
           tone: "linear-gradient(135deg, #b04b14, #211927 62%, #08080d)",
         },
       ];
+      const mockNewsData = [
+        {
+          title: "공연·전시 소식을 불러올 준비가 되었습니다",
+          summary:
+            "Apps Script 배포 환경에서는 연합뉴스 공연·전시 페이지의 최신 기사 카드가 표시됩니다.",
+          url: "https://www.yna.co.kr/culture/performance-exhibition",
+        },
+        {
+          title: "문화 현장 소식은 카드 형태로 확인할 수 있습니다",
+          summary:
+            "기사 제목, 요약, 원문 링크를 함께 보여주어 공연 소식을 빠르게 훑어볼 수 있습니다.",
+          url: "https://www.yna.co.kr/culture/performance-exhibition",
+        },
+        {
+          title: "로컬 HTML에서는 예시 뉴스가 표시됩니다",
+          summary:
+            "실제 크롤링은 Google Apps Script 웹앱으로 실행했을 때 서버에서 처리됩니다.",
+          url: "https://www.yna.co.kr/culture/performance-exhibition",
+        },
+      ];
 
       const performanceGrid = document.querySelector("#performanceGrid");
-      const recommendGrid = document.querySelector("#recommendGrid");
+      const newsGrid = document.querySelector("#newsGrid");
       const performanceStatus = document.querySelector("#performanceStatus");
-      const recommendStatus = document.querySelector("#recommendStatus");
+      const newsStatus = document.querySelector("#newsStatus");
       const heroSection = document.querySelector(".hero");
       const heroEyebrow = document.querySelector("#heroEyebrow");
       const heroTitle = document.querySelector("#heroTitle");
       const heroCopy = document.querySelector("#heroCopy");
       const heroMeta = document.querySelector("#heroMeta");
-      const regionFilter = document.querySelector("#regionFilter");
-      const genreFilter = document.querySelector("#genreFilter");
-      const priceFilter = document.querySelector("#priceFilter");
-      const filterButtons = document.querySelectorAll(".filter-chip");
+      const openPerformanceRegister = document.querySelector(
+        "#openPerformanceRegister",
+      );
+      const performanceRegisterModal = document.querySelector(
+        "#performanceRegisterModal",
+      );
+      const closePerformanceRegister = document.querySelector(
+        "#closePerformanceRegister",
+      );
+      const cancelPerformanceRegister = document.querySelector(
+        "#cancelPerformanceRegister",
+      );
+      const performanceRegisterForm = document.querySelector(
+        "#performanceRegisterForm",
+      );
+      const performanceRegisterStatus = document.querySelector(
+        "#performanceRegisterStatus",
+      );
       const openAiRecommend = document.querySelector("#openAiRecommend");
       const aiRecommendModal = document.querySelector("#aiRecommendModal");
       const closeAiRecommend = document.querySelector("#closeAiRecommend");
       const cancelAiRecommend = document.querySelector("#cancelAiRecommend");
       const aiRecommendForm = document.querySelector("#aiRecommendForm");
       const aiRecommendStatus = document.querySelector("#aiRecommendStatus");
+      const aiResultModal = document.querySelector("#aiResultModal");
+      const aiResultMessage = document.querySelector("#aiResultMessage");
+      const aiResultGrid = document.querySelector("#aiResultGrid");
+      const closeAiResult = document.querySelector("#closeAiResult");
+      const confirmAiResult = document.querySelector("#confirmAiResult");
+      const BOOKING_URL = "https://kopis.or.kr/por/main/main.do";
+      const snapTargets = [
+        ...document.querySelectorAll("main > section, .site-footer"),
+      ];
       let currentPerformanceData = [];
       let heroSlideIndex = 0;
       let heroSlideTimer;
+      let sectionSnapLocked = false;
 
       const escapeHTML = (value) =>
         String(value)
@@ -1355,46 +1477,103 @@
           ? "무료"
           : performance.price || "가격 확인";
 
-      const getLowestPrice = (performance) => {
-        if (performance.priceType === "무료" || performance.price === "무료") {
-          return 0;
-        }
+      const getFirstText = (...values) => {
+        const value = values.find(
+          (item) => item !== undefined && item !== null && String(item).trim(),
+        );
 
-        const numbers = String(performance.price || "")
-          .match(/\d[\d,]*/g)
-          ?.map((value) => Number(value.replace(/,/g, "")))
-          .filter((value) => Number.isFinite(value));
-
-        if (!numbers || !numbers.length) {
-          return null;
-        }
-
-        return Math.min(...numbers);
+        return value === undefined ? "" : String(value).trim();
       };
 
-      const isInPriceRange = (performance, range) => {
-        if (!range) {
-          return true;
+      const stripHTML = (value) =>
+        String(value || "")
+          .replace(/<[^>]+>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+
+      const formatApiDate = (value) => {
+        const text = String(value || "").trim();
+
+        if (/^\d{8}$/.test(text)) {
+          return `${text.slice(0, 4)}.${text.slice(4, 6)}.${text.slice(6)}`;
         }
 
-        const lowestPrice = getLowestPrice(performance);
+        return text;
+      };
 
-        if (lowestPrice === null) {
-          return false;
+      const formatApiDateRange = (startDate, endDate) => {
+        const start = formatApiDate(startDate);
+        const end = formatApiDate(endDate);
+
+        if (!start && !end) {
+          return "";
         }
 
-        const [min, max] = range.split("-").map((value) => Number(value));
-
-        if (Number.isNaN(max)) {
-          return lowestPrice >= min;
+        if (!end || start === end) {
+          return start;
         }
 
-        return lowestPrice >= min && lowestPrice < max;
+        return `${start} ~ ${end}`;
+      };
+
+      const getClientDateValue = (performance) => {
+        const value = String(
+          performance?.startDate || performance?.date || "",
+        ).trim();
+        const normalized = value.replace(/\./g, "-").replace(/\//g, "-");
+        const compact = normalized.match(/^(\d{4})(\d{2})(\d{2})$/);
+        const date = compact
+          ? new Date(`${compact[1]}-${compact[2]}-${compact[3]}`)
+          : new Date(normalized.split("~")[0].trim());
+        const time = date.getTime();
+
+        return Number.isFinite(time) ? time : 0;
+      };
+
+      const getShortTag = (value) => {
+        const text = String(value || "Stage").trim();
+
+        return text.length > 8 ? text.slice(0, 8) : text;
+      };
+
+      const setupExpandableText = (card) => {
+        const textBlocks = card.querySelectorAll("[data-expandable-text]");
+
+        textBlocks.forEach((textBlock) => {
+          textBlock.classList.add("is-collapsed");
+
+          window.requestAnimationFrame(() => {
+            const isOverflowing =
+              textBlock.scrollHeight > textBlock.clientHeight + 1;
+
+            if (!isOverflowing) {
+              textBlock.classList.remove("is-collapsed");
+              return;
+            }
+
+            const button = document.createElement("button");
+            button.className = "more-button";
+            button.type = "button";
+            button.textContent = "...더보기";
+            button.setAttribute("aria-expanded", "false");
+
+            button.addEventListener("click", () => {
+              const isExpanded = !textBlock.classList.contains("is-collapsed");
+
+              textBlock.classList.toggle("is-collapsed", isExpanded);
+              button.textContent = isExpanded ? "...더보기" : "접기";
+              button.setAttribute("aria-expanded", String(!isExpanded));
+            });
+
+            textBlock.insertAdjacentElement("afterend", button);
+          });
+        });
       };
 
       const createPerformanceCard = (performance) => {
         const card = document.createElement("article");
         card.className = "performance-card";
+
         card.innerHTML = `
           <div class="poster">
             <span class="poster-label">${escapeHTML(performance.tag)}</span>
@@ -1405,10 +1584,10 @@
               <span class="card-date">${escapeHTML(performance.date)}</span>
             </div>
             <h3 class="card-title">${escapeHTML(performance.title)}</h3>
-            <p class="card-caption">${escapeHTML(performance.summary)}</p>
+            <p class="card-caption expandable-text" data-expandable-text>${escapeHTML(performance.summary)}</p>
             ${
               performance.recommendReason
-                ? `<p class="ai-reason">${escapeHTML(performance.recommendReason)}</p>`
+                ? `<p class="ai-reason expandable-text" data-expandable-text>${escapeHTML(performance.recommendReason)}</p>`
                 : ""
             }
             <div class="card-meta">
@@ -1417,9 +1596,8 @@
               <span>${escapeHTML(performance.venue)}</span>
             </div>
             <div class="card-footer">
-              <a class="card-link" href="#performances" aria-label="${escapeHTML(performance.title)} 자세히 보기">자세히 보기</a>
               <div class="feed-actions" aria-label="${escapeHTML(performance.title)} 피드 액션">
-                <button class="feed-action" type="button" data-action="favorite" data-performance-id="${escapeHTML(performance.id)}">관심</button>
+                <a class="booking-link" href="${BOOKING_URL}" aria-label="${escapeHTML(performance.title)} 예매 사이트로 이동" target="_blank">예매</a>
                 <button class="feed-action" type="button">공유</button>
               </div>
             </div>
@@ -1437,10 +1615,17 @@
           );
         }
 
+        setupExpandableText(card);
+
         return card;
       };
 
       const renderCards = (target, performances) => {
+        if (!target) {
+          console.error("Card render target is missing.");
+          return;
+        }
+
         target.innerHTML = "";
 
         if (!performances.length) {
@@ -1450,8 +1635,72 @@
         }
 
         performances.forEach((performance) => {
-          target.appendChild(createPerformanceCard(performance));
+          try {
+            target.appendChild(createPerformanceCard(performance));
+          } catch (error) {
+            console.error("공연 카드 렌더링 실패:", performance, error);
+          }
         });
+      };
+
+      const normalizeNewsList = (data) => {
+        if (Array.isArray(data)) {
+          return data;
+        }
+
+        if (Array.isArray(data?.news)) {
+          return data.news;
+        }
+
+        if (Array.isArray(data?.items)) {
+          return data.items;
+        }
+
+        return [];
+      };
+
+      const createNewsCard = (news, index) => {
+        const url = getFirstText(news.url);
+        const card = document.createElement("article");
+        card.className = "news-card";
+
+        card.innerHTML = `
+          <span class="news-type">YNA News</span>
+          <h3>${escapeHTML(news.title || "공연 소식")}</h3>
+          <p>${escapeHTML(news.summary || news.content || "기사 요약을 불러오는 중입니다.")}</p>
+          ${
+            url
+              ? `<a class="booking-link" href="${escapeHTML(url)}" target="_blank" aria-label="${escapeHTML(news.title || "공연 소식")} 원문 보기">기사 보기</a>`
+              : ""
+          }
+        `;
+
+        card.dataset.newsIndex = String(index);
+        return card;
+      };
+
+      const renderNews = (data) => {
+        const newsList = normalizeNewsList(data).slice(0, 3);
+
+        if (!newsGrid) {
+          return;
+        }
+
+        newsGrid.innerHTML = "";
+
+        if (!newsList.length) {
+          newsGrid.innerHTML =
+            '<p class="section-copy">공연 소식을 불러오지 못했습니다.</p>';
+          return;
+        }
+
+        newsList.forEach((news, index) => {
+          newsGrid.appendChild(createNewsCard(news, index));
+        });
+
+        if (newsStatus) {
+          newsStatus.textContent = `${newsList.length}개의 공연 소식을 불러왔습니다.`;
+        }
       };
 
       const setHeroSlide = (performances, index) => {
@@ -1516,121 +1765,97 @@
         }, 5000);
       };
 
-      const normalizePerformance = (performance, index) => ({
-        id: performance.id || `mock-${index}`,
-        title: performance.title || "공연명 확인",
-        region: performance.region || performance.area || "지역 확인",
-        genre: performance.genre || "장르 확인",
-        price: performance.price || "",
-        priceType:
-          performance.priceType ||
-          (performance.isFree || performance.price === "무료"
-            ? "무료"
-            : "유료"),
-        date: performance.date || performance.startDate || "일정 확인",
-        venue: performance.venue || performance.place || "장소 확인",
-        summary:
-          performance.summary ||
-          performance.description ||
-          "공연 소개가 준비되는 중입니다.",
-        tag: performance.tag || performance.genre || "Stage",
-        poster: performance.poster || "",
-        tone:
-          performance.tone ||
-          mockPerformanceData[index % mockPerformanceData.length].tone,
-      });
+      const normalizePerformance = (performance, index) => {
+        const id = getFirstText(
+          performance.id,
+          performance.mt20Id,
+          performance.mt20id,
+        );
+        const startDate = getFirstText(
+          performance.startDate,
+          performance.prfpdfrom,
+        );
+        const endDate = getFirstText(performance.endDate, performance.prfpdto);
+        const price = getFirstText(performance.price, performance.pcseguidance);
+        const genre = getFirstText(performance.genre, performance.genrenm);
+        const summary = getFirstText(
+          performance.summary,
+          performance.description,
+          stripHTML(performance.sty),
+          performance.prfruntime,
+          performance.prfage,
+        );
 
-      const syncSelectOptions = (
-        select,
-        values,
-        defaultLabel,
-        selectedValue,
-      ) => {
-        if (!select) {
-          return;
-        }
-
-        select.innerHTML = `<option value="">${defaultLabel}</option>`;
-
-        const optionValues = values
-          .filter(
-            (value) => value && value !== "지역 확인" && value !== "장르 확인",
-          )
-          .sort((a, b) => a.localeCompare(b, "ko"));
-
-        optionValues.forEach((value) => {
-          const option = document.createElement("option");
-          option.value = value;
-          option.textContent = value;
-          select.appendChild(option);
-        });
-
-        if (optionValues.includes(selectedValue)) {
-          select.value = selectedValue;
-        }
+        return {
+          id: id || `mock-${index}`,
+          title:
+            getFirstText(performance.title, performance.prfnm) || "공연명 확인",
+          region:
+            getFirstText(performance.region, performance.area) || "지역 확인",
+          genre: genre || "장르 확인",
+          price: price || "",
+          priceType:
+            performance.priceType ||
+            (performance.isFree || price === "무료" || /무료/.test(price)
+              ? "무료"
+              : "유료"),
+          date:
+            getFirstText(performance.date) ||
+            formatApiDateRange(startDate, endDate) ||
+            "일정 확인",
+          venue:
+            getFirstText(
+              performance.venue,
+              performance.place,
+              performance.fcltynm,
+            ) || "장소 확인",
+          summary: summary || "공연 소개가 준비되는 중입니다.",
+          tag: getShortTag(performance.tag || genre),
+          poster: getFirstText(performance.poster),
+          tone:
+            performance.tone ||
+            mockPerformanceData[index % mockPerformanceData.length].tone,
+        };
       };
 
-      const syncFilterOptions = (data) => {
-        const selectedRegion = regionFilter ? regionFilter.value : "";
-        const selectedGenre = genreFilter ? genreFilter.value : "";
-        const regions = [
-          ...new Set(data.map((performance) => performance.region)),
-        ]
-          .filter((region) => region && region !== "지역 확인")
-          .sort((a, b) => a.localeCompare(b, "ko"));
-        const genres = [
-          ...new Set(data.map((performance) => performance.genre)),
-        ]
-          .filter((genre) => genre && genre !== "장르 확인")
-          .sort((a, b) => a.localeCompare(b, "ko"));
-
-        syncSelectOptions(regionFilter, regions, "전체 지역", selectedRegion);
-        syncSelectOptions(genreFilter, genres, "전체 장르", selectedGenre);
-      };
-
-      const getFilteredPerformances = (data) => {
-        const selectedRegion = regionFilter ? regionFilter.value : "";
-        const selectedGenre = genreFilter ? genreFilter.value : "";
-        const selectedPrice = priceFilter ? priceFilter.value : "";
-        let filteredData = data;
-
-        if (selectedRegion) {
-          filteredData = filteredData.filter(
-            (performance) => performance.region === selectedRegion,
-          );
+      const normalizeServerPerformanceList = (data) => {
+        if (Array.isArray(data)) {
+          return data;
         }
 
-        if (selectedGenre) {
-          filteredData = filteredData.filter(
-            (performance) => performance.genre === selectedGenre,
-          );
+        if (Array.isArray(data?.performances)) {
+          return data.performances;
         }
 
-        if (selectedPrice) {
-          filteredData = filteredData.filter((performance) =>
-            isInPriceRange(performance, selectedPrice),
-          );
+        if (Array.isArray(data?.items)) {
+          return data.items;
         }
 
-        return filteredData;
+        console.error("공연 데이터가 배열이 아닙니다:", data);
+        return [];
       };
 
       const renderPerformances = (data) => {
-        currentPerformanceData = data.map(normalizePerformance);
-        syncFilterOptions(currentPerformanceData);
-        const filteredData = getFilteredPerformances(currentPerformanceData);
+        try {
+          const performanceList = normalizeServerPerformanceList(data);
+          currentPerformanceData = performanceList
+            .map(normalizePerformance)
+            .sort((a, b) => getClientDateValue(b) - getClientDateValue(a));
 
-        renderCards(performanceGrid, currentPerformanceData.slice(0, 4));
-        renderCards(recommendGrid, filteredData);
-        startHeroSlideshow(currentPerformanceData);
+          renderCards(performanceGrid, currentPerformanceData.slice(0, 4));
+          startHeroSlideshow(currentPerformanceData);
 
-        if (performanceStatus) {
-          performanceStatus.textContent = `${currentPerformanceData.length}개의 공연 정보를 불러왔습니다. 지역, 장르, 가격 기준으로 추천을 필터링할 수 있습니다.`;
-        }
+          if (performanceStatus) {
+            performanceStatus.textContent = `${currentPerformanceData.length}개의 공연 정보를 불러왔습니다. 최신 공연 카드를 확인할 수 있습니다.`;
+          }
+        } catch (error) {
+          console.error("공연 목록 렌더링 실패:", data, error);
 
-        if (recommendStatus) {
-          recommendStatus.textContent =
-            "지역, 공연장르, 가격 기준으로 추천 공연을 확인할 수 있습니다.";
+          if (performanceStatus) {
+            performanceStatus.textContent = `공연 카드 렌더링 실패: ${
+              error?.message || error?.toString?.() || "unknown error"
+            }`;
+          }
         }
       };
 
@@ -1645,6 +1870,28 @@
         aiRecommendModal.querySelector("select")?.focus();
       };
 
+      const openPerformanceRegisterModal = () => {
+        if (!performanceRegisterModal) {
+          return;
+        }
+
+        performanceRegisterModal.classList.add("is-open");
+        performanceRegisterModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        performanceRegisterForm?.querySelector("input")?.focus();
+      };
+
+      const closePerformanceRegisterModal = () => {
+        if (!performanceRegisterModal) {
+          return;
+        }
+
+        performanceRegisterModal.classList.remove("is-open");
+        performanceRegisterModal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        openPerformanceRegister?.focus();
+      };
+
       const closeAiModal = () => {
         if (!aiRecommendModal) {
           return;
@@ -1654,6 +1901,121 @@
         aiRecommendModal.setAttribute("aria-hidden", "true");
         document.body.style.overflow = "";
         openAiRecommend?.focus();
+      };
+
+      const openAiResultModal = () => {
+        if (!aiResultModal) {
+          return;
+        }
+
+        aiResultModal.classList.add("is-open");
+        aiResultModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        closeAiResult?.focus();
+      };
+
+      const closeAiResultModal = () => {
+        if (!aiResultModal) {
+          return;
+        }
+
+        aiResultModal.classList.remove("is-open");
+        aiResultModal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        openAiRecommend?.focus();
+      };
+
+      const getPerformanceRegistrationData = () => {
+        const formData = new FormData(performanceRegisterForm);
+
+        return {
+          title: formData.get("title") || "",
+          poster: formData.get("poster") || "",
+          date: formData.get("date") || "",
+          price: formData.get("price") || "",
+          venue: formData.get("venue") || "",
+          genre: formData.get("genre") || "",
+          musicTitle: formData.get("musicTitle") || "",
+          soloist: formData.get("soloist") || "",
+          cast: formData.get("cast") || "",
+          conductor: formData.get("conductor") || "",
+          description: formData.get("description") || "",
+          sponsor: formData.get("sponsor") || "",
+          organizer: formData.get("organizer") || "",
+          notes: formData.get("notes") || "",
+        };
+      };
+
+      const createLocalRegisteredPerformance = (data) => ({
+        id: `registered-local-${Date.now()}`,
+        title: data.title,
+        poster: data.poster,
+        date: formatApiDate(data.date),
+        startDate: data.date,
+        price: data.price || "가격 확인",
+        priceType: /무료/.test(data.price || "") ? "무료" : "유료",
+        venue: data.venue || "장소 확인",
+        place: data.venue || "장소 확인",
+        genre: data.genre || "등록공연",
+        region: "등록공연",
+        summary:
+          [
+            data.description,
+            data.musicTitle ? `곡명: ${data.musicTitle}` : "",
+            data.soloist ? `솔리스트: ${data.soloist}` : "",
+            data.cast ? `출연진: ${data.cast}` : "",
+            data.conductor ? `지휘자: ${data.conductor}` : "",
+            data.sponsor ? `후원: ${data.sponsor}` : "",
+            data.organizer ? `주최: ${data.organizer}` : "",
+            data.notes ? `기타사항: ${data.notes}` : "",
+          ]
+            .filter(Boolean)
+            .join(" · ") || "공연 소개가 준비되는 중입니다.",
+        tag: getShortTag(data.genre || "등록공연"),
+        tone: "linear-gradient(135deg, #6a2815, #171b27 62%, #08080d)",
+      });
+
+      const requestPerformanceRegistration = (data) => {
+        if (performanceRegisterStatus) {
+          performanceRegisterStatus.textContent =
+            "공연 정보를 저장하는 중입니다.";
+        }
+
+        if (window.google && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler((result) => {
+              const performances = normalizeServerPerformanceList(
+                result?.performances,
+              );
+
+              performanceRegisterForm?.reset();
+              closePerformanceRegisterModal();
+
+              if (performances.length) {
+                renderPerformances(performances);
+              } else {
+                loadPerformances();
+              }
+            })
+            .withFailureHandler((error) => {
+              console.error(error);
+
+              if (performanceRegisterStatus) {
+                const message =
+                  error?.message || error?.toString?.() || "unknown error";
+                performanceRegisterStatus.textContent = `저장 실패: ${message}`;
+              }
+            })
+            .saveRegisteredPerformance(data);
+          return;
+        }
+
+        const nextData = [createLocalRegisteredPerformance(data)].concat(
+          currentPerformanceData,
+        );
+        performanceRegisterForm?.reset();
+        closePerformanceRegisterModal();
+        renderPerformances(nextData);
       };
 
       const getAiPreference = () => {
@@ -1738,18 +2100,15 @@
           ? matchedPerformances
           : getLocalAiRecommendations(preference);
 
-        renderCards(recommendGrid, aiPerformances);
+        renderCards(aiResultGrid, aiPerformances);
 
-        if (recommendStatus) {
-          recommendStatus.textContent =
+        if (aiResultMessage) {
+          aiResultMessage.textContent =
             result?.message ||
             "AI가 현재 입력한 취향에 맞는 공연을 추천했습니다.";
         }
 
-        document.querySelector("#recommend")?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+        openAiResultModal();
       };
 
       const requestAiRecommendations = (preference) => {
@@ -1760,26 +2119,90 @@
         if (window.google && google.script && google.script.run) {
           google.script.run
             .withSuccessHandler((result) => {
-              renderAiRecommendations(result, preference);
               closeAiModal();
+              renderAiRecommendations(result, preference);
             })
             .withFailureHandler((error) => {
               console.error(error);
-              renderAiRecommendations(null, preference);
-
-              if (recommendStatus) {
-                recommendStatus.textContent =
-                  "AI 추천 호출에 실패해 현재 공연 목록 기준으로 추천을 표시했습니다.";
-              }
-
               closeAiModal();
+              renderAiRecommendations(null, preference);
             })
             .recommendPerformances(preference, currentPerformanceData);
           return;
         }
 
-        renderAiRecommendations(null, preference);
         closeAiModal();
+        renderAiRecommendations(null, preference);
+      };
+
+      const getHeaderHeight = () =>
+        Number.parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            "--header-height",
+          ),
+        ) || 0;
+
+      const getSnapScrollTop = (target) =>
+        Math.max(0, target.offsetTop - getHeaderHeight());
+
+      const getCurrentSnapIndex = () => {
+        const currentTop = window.scrollY;
+        let closestIndex = 0;
+        let closestDistance = Number.POSITIVE_INFINITY;
+
+        snapTargets.forEach((target, index) => {
+          const distance = Math.abs(currentTop - getSnapScrollTop(target));
+
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestIndex = index;
+          }
+        });
+
+        return closestIndex;
+      };
+
+      const isModalOpen = () =>
+        performanceRegisterModal?.classList.contains("is-open") ||
+        aiRecommendModal?.classList.contains("is-open") ||
+        aiResultModal?.classList.contains("is-open");
+
+      const handleSectionWheel = (event) => {
+        if (
+          !snapTargets.length ||
+          isModalOpen() ||
+          event.ctrlKey ||
+          Math.abs(event.deltaY) < 18
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+
+        if (sectionSnapLocked) {
+          return;
+        }
+
+        const direction = event.deltaY > 0 ? 1 : -1;
+        const currentIndex = getCurrentSnapIndex();
+        const nextIndex = Math.min(
+          Math.max(currentIndex + direction, 0),
+          snapTargets.length - 1,
+        );
+
+        if (nextIndex === currentIndex) {
+          return;
+        }
+
+        sectionSnapLocked = true;
+        window.scrollTo({
+          top: getSnapScrollTop(snapTargets[nextIndex]),
+          behavior: "smooth",
+        });
+
+        window.setTimeout(() => {
+          sectionSnapLocked = false;
+        }, 820);
       };
 
       const loadPerformances = () => {
@@ -1787,16 +2210,29 @@
         if (window.google && google.script && google.script.run) {
           google.script.run
             .withSuccessHandler((data) => {
-              const performances = Array.isArray(data) ? data : [];
-              renderPerformances(performances);
+              console.log("getPerformances success:", data);
+              const performances = normalizeServerPerformanceList(data);
+
+              if (performances.length) {
+                renderPerformances(performances);
+                return;
+              }
+
+              renderPerformances(mockPerformanceData);
+
+              if (performanceStatus) {
+                performanceStatus.textContent =
+                  "API에서 공연 목록이 비어 있어 예시 공연 데이터로 화면을 표시합니다.";
+              }
             })
             .withFailureHandler((error) => {
               console.error(error);
               renderPerformances(mockPerformanceData);
 
               if (performanceStatus) {
-                performanceStatus.textContent =
-                  "API 연결에 실패해 예시 공연 데이터로 화면을 표시합니다.";
+                const message =
+                  error?.message || error?.toString?.() || "unknown error";
+                performanceStatus.textContent = `API 호출 실패: ${message}`;
               }
             })
             .getPerformances();
@@ -1807,27 +2243,58 @@
         renderPerformances(mockPerformanceData);
       };
 
-      filterButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          filterButtons.forEach((item) => item.classList.remove("active"));
-          button.classList.add("active");
-          if (regionFilter) regionFilter.value = "";
-          if (genreFilter) genreFilter.value = "";
-          if (priceFilter) priceFilter.value = "";
-          renderPerformances(currentPerformanceData);
-        });
-      });
+      const loadNews = () => {
+        if (window.google && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler((data) => {
+              const newsList = normalizeNewsList(data);
 
-      [regionFilter, genreFilter, priceFilter].forEach((select) => {
-        select?.addEventListener("change", () => {
-          filterButtons.forEach((item) => item.classList.remove("active"));
-          renderPerformances(currentPerformanceData);
-        });
-      });
+              if (newsList.length) {
+                renderNews(newsList);
+                return;
+              }
 
+              renderNews(mockNewsData);
+
+              if (newsStatus) {
+                newsStatus.textContent =
+                  "뉴스 목록이 비어 있어 예시 소식을 표시합니다.";
+              }
+            })
+            .withFailureHandler((error) => {
+              console.error(error);
+              renderNews(mockNewsData);
+
+              if (newsStatus) {
+                const message =
+                  error?.message || error?.toString?.() || "unknown error";
+                newsStatus.textContent = `뉴스 호출 실패: ${message}`;
+              }
+            })
+            .getPerformanceNews(3);
+          return;
+        }
+
+        renderNews(mockNewsData);
+      };
+
+      openPerformanceRegister?.addEventListener(
+        "click",
+        openPerformanceRegisterModal,
+      );
+      closePerformanceRegister?.addEventListener(
+        "click",
+        closePerformanceRegisterModal,
+      );
+      cancelPerformanceRegister?.addEventListener(
+        "click",
+        closePerformanceRegisterModal,
+      );
       openAiRecommend?.addEventListener("click", openAiModal);
       closeAiRecommend?.addEventListener("click", closeAiModal);
       cancelAiRecommend?.addEventListener("click", closeAiModal);
+      closeAiResult?.addEventListener("click", closeAiResultModal);
+      confirmAiResult?.addEventListener("click", closeAiResultModal);
 
       aiRecommendModal?.addEventListener("click", (event) => {
         if (event.target === aiRecommendModal) {
@@ -1835,11 +2302,34 @@
         }
       });
 
+      aiResultModal?.addEventListener("click", (event) => {
+        if (event.target === aiResultModal) {
+          closeAiResultModal();
+        }
+      });
+
+      performanceRegisterModal?.addEventListener("click", (event) => {
+        if (event.target === performanceRegisterModal) {
+          closePerformanceRegisterModal();
+        }
+      });
+
       document.addEventListener("keydown", (event) => {
-        if (
-          event.key === "Escape" &&
-          aiRecommendModal?.classList.contains("is-open")
-        ) {
+        if (event.key !== "Escape") {
+          return;
+        }
+
+        if (performanceRegisterModal?.classList.contains("is-open")) {
+          closePerformanceRegisterModal();
+          return;
+        }
+
+        if (aiResultModal?.classList.contains("is-open")) {
+          closeAiResultModal();
+          return;
+        }
+
+        if (aiRecommendModal?.classList.contains("is-open")) {
           closeAiModal();
         }
       });
@@ -1849,41 +2339,17 @@
         requestAiRecommendations(getAiPreference());
       });
 
-      document.addEventListener("click", (event) => {
-        const favoriteButton = event.target.closest('[data-action="favorite"]');
+      performanceRegisterForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        requestPerformanceRegistration(getPerformanceRegistrationData());
+      });
 
-        if (!favoriteButton) {
-          return;
-        }
-
-        const performance = currentPerformanceData.find(
-          (item) => item.id === favoriteButton.dataset.performanceId,
-        );
-
-        if (!performance) {
-          return;
-        }
-
-        const markFavorite = () => {
-          favoriteButton.textContent = "관심중";
-          favoriteButton.setAttribute("aria-pressed", "true");
-        };
-
-        if (window.google && google.script && google.script.run) {
-          google.script.run
-            .withSuccessHandler(markFavorite)
-            .withFailureHandler((error) => {
-              console.error(error);
-              favoriteButton.textContent = "저장 실패";
-            })
-            .saveFavorite(performance);
-          return;
-        }
-
-        markFavorite();
+      document.addEventListener("wheel", handleSectionWheel, {
+        passive: false,
       });
 
       loadPerformances();
+      loadNews();
     </script>
   </body>
 </html>
